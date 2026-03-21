@@ -1,0 +1,10 @@
+---
+description: Use pnpm for all Node package management in this project
+alwaysApply: true
+---
+
+# Package manager: pnpm
+
+- Use **pnpm** for installs, dependency changes, and running package scripts. Do not use **npm** or **yarn** unless the user explicitly asks.
+- Prefer: `pnpm install`, `pnpm add <pkg>`, `pnpm add -D <pkg>`, `pnpm remove <pkg>`, `pnpm run <script>`, `pnpm exec <cmd>`.
+- When suggesting commands in docs or automation, default to pnpm equivalents of npm commands (e.g. `pnpm ci` instead of `npm ci`).
