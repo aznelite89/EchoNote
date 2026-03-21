@@ -178,9 +178,7 @@ export default function ConvoAI() {
   }, [])
 
   return (
-    <main className="relative min-h-screen bg-background text-foreground">
-      {/* Status Bar Spacer */}
-      <div className="h-12" />
+    <main className="relative min-h-screen bg-background text-foreground" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
 
       {/* Main Content */}
       <AnimatePresence mode="wait">

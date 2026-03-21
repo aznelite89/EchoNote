@@ -31,7 +31,8 @@ export function BottomSheet({ recordings, onRecordingClick }: BottomSheetProps) 
 
   return (
     <motion.div
-      className="fixed bottom-0 left-0 right-0 z-40 rounded-t-3xl bg-card/90 backdrop-blur-xl border-t border-border/30"
+      className="fixed left-0 right-0 z-40 rounded-t-3xl bg-card/90 backdrop-blur-xl border-t border-border/30"
+      style={{ bottom: 'calc(env(safe-area-inset-bottom) + 4rem)' }}
       initial={{ height: minHeight }}
       animate={{ height: isExpanded ? maxHeight : minHeight }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}

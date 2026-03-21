@@ -25,7 +25,7 @@ export function ProfileScreen() {
   ]
 
   return (
-    <div className="min-h-screen bg-background pt-14 pb-32">
+    <div className="min-h-screen bg-background" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 5rem)' }}>
       {/* Header */}
       <div className="px-5 py-6">
         <div className="flex items-center justify-between">
