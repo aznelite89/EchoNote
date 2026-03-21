@@ -11,9 +11,14 @@ import {
   Moon,
   Globe,
   Smartphone,
+  LogOut,
 } from "lucide-react"
 
-export function ProfileScreen() {
+interface ProfileScreenProps {
+  onLogout?: () => void
+}
+
+export function ProfileScreen({ onLogout }: ProfileScreenProps) {
   const menuItems = [
     { icon: Bell, label: "Notifications", badge: "3" },
     { icon: Cloud, label: "Cloud Sync", status: "Connected" },
@@ -151,6 +156,25 @@ export function ProfileScreen() {
         </div>
       </div>
 
+      {/* Logout Button */}
+      {onLogout && (
+        <motion.div
+          className="px-5 mt-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <motion.button
+            onClick={onLogout}
+            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-destructive/10 border border-destructive/20 px-4 py-3.5 text-destructive font-bold"
+            whileTap={{ scale: 0.98 }}
+          >
+            <LogOut className="h-5 w-5" />
+            Sign Out
+          </motion.button>
+        </motion.div>
+      )}
+
       {/* Version */}
       <motion.p
         className="mt-8 text-center text-xs text-muted-foreground"
@@ -158,7 +182,7 @@ export function ProfileScreen() {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}
       >
-        Convo AI v1.0.0
+        EchoNote v1.0.0
       </motion.p>
     </div>
   )
