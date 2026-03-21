@@ -8,6 +8,7 @@ import { InsightsScreen } from "@/components/insights-screen"
 import { ProfileScreen } from "@/components/profile-screen"
 import { SummaryScreen } from "@/components/summary-screen"
 import { BottomNav } from "@/components/bottom-nav"
+import { AuthScreens } from "@/components/auth-screens"
 import type { Recording } from "@/types/recording"
 
 // Sample data
@@ -127,6 +128,7 @@ const sampleRecordings: Recording[] = [
 type Tab = "home" | "history" | "insights" | "profile"
 
 export default function ConvoAI() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [activeTab, setActiveTab] = useState<Tab>("home")
   const [isRecording, setIsRecording] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
@@ -177,6 +179,20 @@ export default function ConvoAI() {
     setSelectedRecording(null)
   }, [])
 
+  const handleAuthSuccess = useCallback(() => {
+    setIsAuthenticated(true)
+  }, [])
+
+  const handleLogout = useCallback(() => {
+    setIsAuthenticated(false)
+    setActiveTab("home")
+  }, [])
+
+  // Show auth screens if not authenticated
+  if (!isAuthenticated) {
+    return <AuthScreens onAuthSuccess={handleAuthSuccess} />
+  }
+
   return (
     <main className="relative min-h-screen bg-background text-foreground" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
 
@@ -207,7 +223,7 @@ export default function ConvoAI() {
             totalDuration="3h 24m"
           />
         )}
-        {activeTab === "profile" && <ProfileScreen key="profile" />}
+        {activeTab === "profile" && <ProfileScreen key="profile" onLogout={handleLogout} />}
       </AnimatePresence>
 
       {/* Summary Screen Overlay */}

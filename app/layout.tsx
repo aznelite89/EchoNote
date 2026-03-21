@@ -10,8 +10,8 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
-  title: 'Convo AI - Smart Meeting Notes',
-  description: 'AI-powered meeting notes and conversation summarization',
+  title: 'EchoNote - AI Meeting Notes',
+  description: 'Capture, transcribe and summarize your conversations with AI',
 }
 
 export const viewport: Viewport = {
