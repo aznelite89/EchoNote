@@ -41,24 +41,20 @@ const RecordButton = ({ isRecording, isProcessing, onClick }: RecordButtonProps)
         </>
       )}
 
-      {/* Button shadow/glow */}
+      {/* Button glow — opacity-only animation for mobile perf */}
       <motion.div
         className="absolute rounded-full"
-        animate={{
-          boxShadow: isRecording
-            ? [
-                "0 0 30px 10px rgba(96, 165, 250, 0.3)",
-                "0 0 50px 20px rgba(96, 165, 250, 0.4)",
-                "0 0 30px 10px rgba(96, 165, 250, 0.3)",
-              ]
-            : "0 0 20px 5px rgba(96, 165, 250, 0.15)",
+        style={{
+          width: 150,
+          height: 150,
+          boxShadow: "0 0 40px 15px rgba(96, 165, 250, 0.35)",
         }}
+        animate={{ opacity: isRecording ? [0.5, 1, 0.5] : 0.3 }}
         transition={{
           duration: 1.5,
           repeat: isRecording ? Infinity : 0,
           ease: "easeInOut",
         }}
-        style={{ width: 150, height: 150 }}
       />
 
       {/* Main button */}

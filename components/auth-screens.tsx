@@ -11,12 +11,10 @@ import { Label } from "@/components/ui/label"
 import { apiLogin, apiRegister } from "@/lib/api"
 import { MOTION_SSR_SAFE } from "@/lib/motion-policy"
 import { cn } from "@/lib/utils"
+import { useAppDispatch } from "@/store/hooks"
+import { loginSuccess } from "@/slices/sessionSlice"
 
 type AuthMode = "login" | "signup"
-
-interface AuthScreensProps {
-  onAuthSuccess: () => void
-}
 
 // Validation helpers
 const validateEmail = (email: string): string | null => {
@@ -266,7 +264,8 @@ const AuthInput = ({
   )
 }
 
-const AuthScreens = ({ onAuthSuccess }: AuthScreensProps) => {
+const AuthScreens = () => {
+  const dispatch = useAppDispatch()
   const [mode, setMode] = useState<AuthMode>("login")
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
@@ -313,23 +312,18 @@ const AuthScreens = ({ onAuthSuccess }: AuthScreensProps) => {
       setIsLoading(true)
 
       try {
-        if (mode === "signup") {
-          const { tokens } = await apiRegister(email, name, password)
-          localStorage.setItem("accessToken", tokens.accessToken)
-          localStorage.setItem("refreshToken", tokens.refreshToken)
-        } else {
-          const { tokens } = await apiLogin(email, password)
-          localStorage.setItem("accessToken", tokens.accessToken)
-          localStorage.setItem("refreshToken", tokens.refreshToken)
-        }
-        onAuthSuccess()
+        const result =
+          mode === "signup"
+            ? await apiRegister(email, name, password)
+            : await apiLogin(email, password)
+        dispatch(loginSuccess({ user: result.user, tokens: result.tokens }))
       } catch (err) {
         toast.error(err instanceof Error ? err.message : "Authentication failed")
       } finally {
         setIsLoading(false)
       }
     },
-    [mode, name, email, password, onAuthSuccess]
+    [mode, name, email, password, dispatch]
   )
 
   const handleSocialLogin = useCallback((_provider: string) => {

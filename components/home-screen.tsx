@@ -69,47 +69,17 @@ const HomeScreen = ({
 }: HomeScreenProps) => {
   return (
     <div className="relative min-h-screen overflow-hidden">
-      {/* Animated Background */}
+      {/* Static Background — no infinite animations for mobile perf */}
       <div className="absolute inset-0 overflow-hidden">
-        {/* Ambient gradient orbs */}
-        <motion.div
-          className="absolute -top-1/4 -left-1/4 h-[600px] w-[600px] rounded-full bg-primary/5 blur-3xl"
-          animate={{
-            x: [0, 50, 0],
-            y: [0, 30, 0]
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
-        <motion.div
-          className="absolute -bottom-1/4 -right-1/4 h-[600px] w-[600px] rounded-full bg-accent/5 blur-3xl"
-          animate={{
-            x: [0, -50, 0],
-            y: [0, -30, 0]
-          }}
-          transition={{
-            duration: 15,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-        />
+        <div className="absolute -top-1/4 -left-1/4 h-[600px] w-[600px] rounded-full bg-primary/5 blur-3xl" />
+        <div className="absolute -bottom-1/4 -right-1/4 h-[600px] w-[600px] rounded-full bg-accent/5 blur-3xl" />
         {isRecording && (
           <motion.div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[400px] rounded-full bg-primary/10 blur-3xl"
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{
-              opacity: [0.3, 0.6, 0.3],
-              scale: [1, 1.2, 1]
-            }}
-            exit={{ opacity: 0, scale: 0.5 }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[400px] rounded-full bg-primary/10 blur-2xl"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0.3, 0.5, 0.3] }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
           />
         )}
       </div>

@@ -25,6 +25,10 @@ async function apiFetch<T>(path: string, options: RequestInit = {}): Promise<T> 
   return res.json() as Promise<T>
 }
 
+export async function apiGetMe(): Promise<User> {
+  return apiFetch("/users/me")
+}
+
 export async function apiLogin(
   email: string,
   password: string

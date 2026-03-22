@@ -12,7 +12,7 @@ import ProfileScreen from "@/components/profile-screen"
 import SummaryScreen from "@/components/summary-screen"
 import { useRecorder } from "@/hooks/use-recorder"
 import { useAppDispatch, useAppSelector } from "@/store/hooks"
-import { setIsAuthenticated } from "@/slices/sessionSlice"
+import { logout, restoreSession } from "@/slices/sessionSlice"
 import { setActiveTab, type Tab } from "@/slices/navigationSlice"
 import {
   prependRecording,
@@ -47,9 +47,7 @@ const ConvoAI = () => {
     useRecorder()
 
   useEffect(() => {
-    if (typeof window !== "undefined" && localStorage.getItem("accessToken")) {
-      dispatch(setIsAuthenticated(true))
-    }
+    dispatch(restoreSession())
   }, [dispatch])
 
   useEffect(() => {
@@ -76,10 +74,6 @@ const ConvoAI = () => {
     [dispatch]
   )
 
-  const handleAuthSuccess = useCallback(() => {
-    dispatch(setIsAuthenticated(true))
-  }, [dispatch])
-
   const handleDeleteRecording = useCallback(
     async (id: string) => {
       dispatch(removeRecording(id))
@@ -88,14 +82,12 @@ const ConvoAI = () => {
   )
 
   const handleLogout = useCallback(() => {
-    localStorage.removeItem("accessToken")
-    localStorage.removeItem("refreshToken")
-    dispatch(setIsAuthenticated(false))
+    dispatch(logout())
     dispatch(setActiveTab("home"))
   }, [dispatch])
 
   if (!isAuthenticated) {
-    return <AuthScreens onAuthSuccess={handleAuthSuccess} />
+    return <AuthScreens />
   }
 
   return (

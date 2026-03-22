@@ -13,12 +13,30 @@ import {
   Settings,
   Smartphone,
 } from "lucide-react"
+import type { Map as ImMap } from "immutable"
+import { useAppSelector } from "@/store/hooks"
+import type { User } from "@/types/user"
 
 interface ProfileScreenProps {
   onLogout?: () => void
 }
 
 const ProfileScreen = ({ onLogout }: ProfileScreenProps) => {
+  const userImmutable = useAppSelector((s) => s.session.get("user"))
+  const user = userImmutable
+    ? ((userImmutable as ImMap<string, unknown>).toJS() as unknown as User)
+    : null
+
+  const initials = user?.name
+    ? user.name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
+    : "?"
+
+  const planLabel = user?.plan === "pro" ? "Pro" : "Free"
   const menuItems = [
     { icon: Bell, label: "Notifications", badge: "3" },
     { icon: Cloud, label: "Cloud Sync", status: "Connected" },
@@ -65,14 +83,14 @@ const ProfileScreen = ({ onLogout }: ProfileScreenProps) => {
         <div className="flex items-center gap-4">
           <div className="relative">
             <div className="h-16 w-16 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-              <span className="text-2xl font-black text-foreground">JD</span>
+              <span className="text-2xl font-black text-foreground">{initials}</span>
             </div>
             <div className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-green-500 border-2 border-background" />
           </div>
           <div className="flex-1">
-            <h2 className="text-lg font-extrabold text-foreground">John Doe</h2>
+            <h2 className="text-lg font-extrabold text-foreground">{user?.name ?? "Guest"}</h2>
             <p className="text-sm font-medium text-muted-foreground">
-              john@example.com
+              {user?.email ?? ""}
             </p>
           </div>
           <motion.button
@@ -88,7 +106,7 @@ const ProfileScreen = ({ onLogout }: ProfileScreenProps) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-muted-foreground">Current Plan</p>
-              <p className="font-extrabold text-foreground">Pro</p>
+              <p className="font-extrabold text-foreground">{planLabel}</p>
             </div>
             <motion.button
               className="rounded-xl bg-foreground px-4 py-2 text-sm font-medium text-background"

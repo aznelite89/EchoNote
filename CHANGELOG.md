@@ -2,9 +2,24 @@
 
 ## 2026-03-22
 
+### Fixed
+
+- Mobile FPS: `home-screen.tsx` — made ambient gradient orbs static (removed `repeat: Infinity` + `blur-3xl` animation); recording pulse uses opacity-only animation with `blur-2xl`
+- Mobile FPS: `waveform.tsx` — animate `scaleY` instead of `height` (GPU-composited, no layout thrashing); reduced from 40 to 20 bars with 4px width
+- Mobile FPS: `record-button.tsx` — replaced animated `boxShadow` keyframes with static shadow + opacity-only animation
+
 ### Added
 
 - `@reduxjs/toolkit`, `react-redux`, `redux-saga`, `immutable` — client Redux store (`makeStore`), `slices/*` (`createSlice` + Immutable `fromJS` / `merge` reducers), `sagas/*` (session, common, recordings), `store/root-state.ts` / `store/hooks.ts`, `components/redux-provider.tsx` wrapping the app in `app/layout.tsx`
+- `lib/api.ts` — `apiGetMe()` calls `GET /users/me` to fetch authenticated user profile
+
+### Changed
+
+- `slices/sessionSlice.ts` — expanded state with `user`, `accessToken`, `refreshToken`; replaced `setIsAuthenticated` with `loginSuccess`, `logout`, `setTokens`, `restoreSession` actions; tokens persisted to localStorage in reducers
+- `sagas/sessionSaga.ts` — handles `loginSuccess` (fetch recordings), `logout` (clear recordings), `restoreSession` (read token from localStorage → `GET /users/me` → restore or logout)
+- `components/auth-screens.tsx` — dispatches `loginSuccess` directly to Redux instead of `onAuthSuccess` callback; removed `onAuthSuccess` prop
+- `components/profile-screen.tsx` — reads user from Redux via `useAppSelector`; displays real name, email, initials, and plan instead of hardcoded "John Doe"
+- `app/page.tsx` — dispatches `restoreSession` on mount and `logout` on sign out; removed `handleAuthSuccess` callback
 
 ### Changed
 

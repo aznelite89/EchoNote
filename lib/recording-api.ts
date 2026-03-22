@@ -37,7 +37,7 @@ function handleUnauthorized(res: Response): void {
   if (res.status === 401 && typeof window !== "undefined") {
     localStorage.removeItem("accessToken")
     localStorage.removeItem("refreshToken")
-    window.location.reload()
+    window.location.reload() // reload triggers restoreSession → finds no token → shows login
   }
 }
 
