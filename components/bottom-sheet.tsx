@@ -52,7 +52,7 @@ const BottomSheet = ({
 
       {/* Sheet */}
       <motion.div
-        className="fixed left-0 right-0 z-40 rounded-t-3xl bg-card/90 backdrop-blur-xl border-t border-muted-foreground/20"
+        className="fixed left-0 right-0 z-40 rounded-t-3xl bg-card/90 backdrop-blur-xl border-t border-muted-foreground/30"
         style={{
           bottom: "calc(env(safe-area-inset-bottom) + 4rem)",
           y,
