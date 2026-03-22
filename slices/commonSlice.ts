@@ -1,22 +1,24 @@
-import { createAction, type UnknownAction } from "@reduxjs/toolkit"
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 import { fromJS } from "immutable"
-
-export const setLastError = createAction<string | null>("common/setLastError")
 
 const initialState = fromJS({
   lastError: null as string | null,
 })
 
-export default function commonReducer(
-  state = initialState,
-  action: UnknownAction
-) {
-  if (setLastError.match(action)) {
-    return state.merge(
-      fromJS({
-        lastError: action.payload,
-      })
-    )
-  }
-  return state
-}
+const commonSlice = createSlice({
+  name: "common",
+  initialState,
+  reducers: {
+    setLastError: (state, action: PayloadAction<string | null>) => {
+      return state.merge(
+        fromJS({
+          lastError: action.payload,
+        })
+      )
+    },
+  },
+})
+
+export const { setLastError } = commonSlice.actions
+
+export default commonSlice.reducer

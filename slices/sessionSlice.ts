@@ -1,22 +1,24 @@
-import { createAction, type UnknownAction } from "@reduxjs/toolkit"
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 import { fromJS } from "immutable"
-
-export const setIsAuthenticated = createAction<boolean>("session/setIsAuthenticated")
 
 const initialState = fromJS({
   isAuthenticated: false,
 })
 
-export default function sessionReducer(
-  state = initialState,
-  action: UnknownAction
-) {
-  if (setIsAuthenticated.match(action)) {
-    return state.merge(
-      fromJS({
-        isAuthenticated: action.payload,
-      })
-    )
-  }
-  return state
-}
+const sessionSlice = createSlice({
+  name: "session",
+  initialState,
+  reducers: {
+    setIsAuthenticated: (state, action: PayloadAction<boolean>) => {
+      return state.merge(
+        fromJS({
+          isAuthenticated: action.payload,
+        })
+      )
+    },
+  },
+})
+
+export const { setIsAuthenticated } = sessionSlice.actions
+
+export default sessionSlice.reducer
