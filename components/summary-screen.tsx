@@ -1,7 +1,16 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { ArrowLeft, Share2, Download, Edit3, Check, Circle, Quote, Sparkles } from "lucide-react"
+import {
+  ArrowLeft,
+  Share2,
+  Download,
+  Edit3,
+  Check,
+  Circle,
+  Quote,
+  Sparkles
+} from "lucide-react"
 import type { Recording, ActionItem } from "@/types/recording"
 import { useState } from "react"
 
@@ -75,7 +84,9 @@ export function SummaryScreen({ recording, onBack }: SummaryScreenProps) {
           <div className="flex items-center gap-2 mb-2">
             <div className="flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1">
               <Sparkles className="h-3 w-3 text-primary" />
-              <span className="text-xs font-medium text-primary">AI Summary</span>
+              <span className="text-xs font-medium text-primary">
+                AI Summary
+              </span>
             </div>
             {recording.confidence && (
               <span className="text-xs text-muted-foreground">
@@ -83,7 +94,9 @@ export function SummaryScreen({ recording, onBack }: SummaryScreenProps) {
               </span>
             )}
           </div>
-          <h1 className="text-3xl font-black text-foreground tracking-tight">{recording.title}</h1>
+          <h1 className="text-3xl font-black text-foreground tracking-tight">
+            {recording.title}
+          </h1>
           <div className="mt-2 flex items-center gap-3 text-sm text-muted-foreground">
             <span>{recording.duration}</span>
             <span className="h-1 w-1 rounded-full bg-muted-foreground/50" />
@@ -103,7 +116,9 @@ export function SummaryScreen({ recording, onBack }: SummaryScreenProps) {
           <h2 className="mb-3 text-xs font-black text-muted-foreground uppercase tracking-widest">
             Summary
           </h2>
-          <p className="text-foreground leading-relaxed font-medium">{recording.summary}</p>
+          <p className="text-foreground leading-relaxed font-medium">
+            {recording.summary}
+          </p>
         </motion.div>
 
         {/* Key Points */}
@@ -208,7 +223,11 @@ export function SummaryScreen({ recording, onBack }: SummaryScreenProps) {
                 >
                   <div className="flex items-start gap-3">
                     <Quote className="h-5 w-5 shrink-0 text-primary" />
-                    <p className="text-foreground italic">{'"'}{highlight}{'"'}</p>
+                    <p className="text-foreground italic">
+                      {'"'}
+                      {highlight}
+                      {'"'}
+                    </p>
                   </div>
                 </motion.div>
               ))}

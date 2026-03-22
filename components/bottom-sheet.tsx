@@ -10,12 +10,16 @@ interface BottomSheetProps {
   onRecordingClick: (recording: Recording) => void
 }
 
-export function BottomSheet({ recordings, onRecordingClick }: BottomSheetProps) {
+export function BottomSheet({
+  recordings,
+  onRecordingClick
+}: BottomSheetProps) {
   const [isExpanded, setIsExpanded] = useState(false)
   const y = useMotionValue(0)
-  
+
   const minHeight = 140
-  const maxHeight = typeof window !== "undefined" ? window.innerHeight * 0.7 : 500
+  const maxHeight =
+    typeof window !== "undefined" ? window.innerHeight * 0.7 : 500
 
   const handleDragEnd = (_: any, info: PanInfo) => {
     if (info.velocity.y < -500 || info.offset.y < -100) {
@@ -32,7 +36,10 @@ export function BottomSheet({ recordings, onRecordingClick }: BottomSheetProps) 
   return (
     <motion.div
       className="fixed left-0 right-0 z-40 rounded-t-3xl bg-card/90 backdrop-blur-xl border-t border-border/30"
-      style={{ bottom: 'calc(env(safe-area-inset-bottom) + 4rem)' }}
+      style={{
+        bottom: "calc(env(safe-area-inset-bottom) + 4rem)",
+        y,
+      }}
       initial={{ height: minHeight }}
       animate={{ height: isExpanded ? maxHeight : minHeight }}
       transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -40,7 +47,6 @@ export function BottomSheet({ recordings, onRecordingClick }: BottomSheetProps) 
       dragConstraints={{ top: 0, bottom: 0 }}
       dragElastic={0.2}
       onDragEnd={handleDragEnd}
-      style={{ y }}
     >
       {/* Handle */}
       <div className="flex justify-center pt-3 pb-2">
@@ -50,8 +56,12 @@ export function BottomSheet({ recordings, onRecordingClick }: BottomSheetProps) 
       {/* Header */}
       <div className="flex items-center justify-between px-5 pb-3">
         <div>
-          <h2 className="text-foreground font-extrabold text-lg tracking-tight">Recent Notes</h2>
-          <p className="text-xs font-semibold text-muted-foreground">{recordings.length} recordings</p>
+          <h2 className="text-foreground font-extrabold text-lg tracking-tight">
+            Recent Notes
+          </h2>
+          <p className="text-xs font-semibold text-muted-foreground">
+            {recordings.length} recordings
+          </p>
         </div>
         <div className="flex -space-x-2">
           {recordings.slice(0, 3).map((_, i) => (

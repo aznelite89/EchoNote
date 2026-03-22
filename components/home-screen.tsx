@@ -1,6 +1,8 @@
 "use client"
 
 import { motion, AnimatePresence } from "framer-motion"
+import { MotionEntrance } from "@/components/motion-entrance"
+import { MOTION_SSR_SAFE } from "@/lib/motion-policy"
 import { RecordButton } from "./record-button"
 import { Waveform } from "./waveform"
 import { BottomSheet } from "./bottom-sheet"
@@ -15,13 +17,84 @@ interface HomeScreenProps {
   onRecordingClick: (recording: Recording) => void
 }
 
+function HomeStatusShell({ children }: { children: React.ReactNode }) {
+  if (MOTION_SSR_SAFE) {
+    return (
+      <MotionEntrance
+        className="mb-8 text-center"
+        staticTarget={{ opacity: 1, y: 0 }}
+        entranceFrom={{ opacity: 0, y: -20 }}
+      >
+        {children}
+      </MotionEntrance>
+    )
+  }
+  return (
+    <motion.div
+      className="mb-8 text-center"
+      initial={false}
+      animate={{ opacity: 1, y: 0 }}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
+function HomeRecordShell({ children }: { children: React.ReactNode }) {
+  if (MOTION_SSR_SAFE) {
+    return (
+      <MotionEntrance
+        staticTarget={{ opacity: 1, scale: 1 }}
+        entranceFrom={{ opacity: 0, scale: 0.8 }}
+        entranceTransition={{ delay: 0.1 }}
+      >
+        {children}
+      </MotionEntrance>
+    )
+  }
+  return (
+    <motion.div
+      initial={false}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ delay: 0.1 }}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
+function HomeWaveShell({ children }: { children: React.ReactNode }) {
+  if (MOTION_SSR_SAFE) {
+    return (
+      <MotionEntrance
+        className="mt-10 w-full max-w-sm"
+        staticTarget={{ opacity: 1, y: 0 }}
+        entranceFrom={{ opacity: 0, y: 20 }}
+        entranceTransition={{ delay: 0.2 }}
+      >
+        {children}
+      </MotionEntrance>
+    )
+  }
+  return (
+    <motion.div
+      className="mt-10 w-full max-w-sm"
+      initial={false}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.2 }}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
 export function HomeScreen({
   isRecording,
   isProcessing,
   recordingTime,
   onRecordToggle,
   recordings,
-  onRecordingClick,
+  onRecordingClick
 }: HomeScreenProps) {
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -32,24 +105,24 @@ export function HomeScreen({
           className="absolute -top-1/4 -left-1/4 h-[600px] w-[600px] rounded-full bg-primary/5 blur-3xl"
           animate={{
             x: [0, 50, 0],
-            y: [0, 30, 0],
+            y: [0, 30, 0]
           }}
           transition={{
             duration: 20,
             repeat: Infinity,
-            ease: "easeInOut",
+            ease: "easeInOut"
           }}
         />
         <motion.div
           className="absolute -bottom-1/4 -right-1/4 h-[600px] w-[600px] rounded-full bg-accent/5 blur-3xl"
           animate={{
             x: [0, -50, 0],
-            y: [0, -30, 0],
+            y: [0, -30, 0]
           }}
           transition={{
             duration: 15,
             repeat: Infinity,
-            ease: "easeInOut",
+            ease: "easeInOut"
           }}
         />
         {isRecording && (
@@ -58,13 +131,13 @@ export function HomeScreen({
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{
               opacity: [0.3, 0.6, 0.3],
-              scale: [1, 1.2, 1],
+              scale: [1, 1.2, 1]
             }}
             exit={{ opacity: 0, scale: 0.5 }}
             transition={{
               duration: 3,
               repeat: Infinity,
-              ease: "easeInOut",
+              ease: "easeInOut"
             }}
           />
         )}
@@ -73,11 +146,7 @@ export function HomeScreen({
       {/* Main Content */}
       <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-8 pb-48">
         {/* Status Text */}
-        <motion.div
-          className="mb-8 text-center"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
+        <HomeStatusShell>
           <AnimatePresence mode="wait">
             {isProcessing ? (
               <motion.div
@@ -86,7 +155,9 @@ export function HomeScreen({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
               >
-                <p className="text-2xl font-extrabold text-foreground tracking-tight">Processing</p>
+                <p className="text-2xl font-extrabold text-foreground tracking-tight">
+                  Processing
+                </p>
                 <p className="mt-1 text-sm font-medium text-muted-foreground">
                   AI is analyzing your conversation...
                 </p>
@@ -104,7 +175,9 @@ export function HomeScreen({
                     animate={{ opacity: [1, 0.5, 1] }}
                     transition={{ duration: 1, repeat: Infinity }}
                   />
-                  <p className="text-2xl font-extrabold text-foreground tracking-tight">Recording</p>
+                  <p className="text-2xl font-extrabold text-foreground tracking-tight">
+                    Recording
+                  </p>
                 </div>
                 <p className="text-3xl font-black font-mono text-primary tracking-tight">
                   {recordingTime}
@@ -117,37 +190,30 @@ export function HomeScreen({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
               >
-                <p className="text-3xl font-black text-foreground tracking-tight">Tap to Record</p>
+                <p className="text-3xl font-black text-foreground tracking-tight">
+                  Tap to Record
+                </p>
                 <p className="mt-2 text-sm font-medium text-muted-foreground">
                   Capture meetings, calls & conversations
                 </p>
               </motion.div>
             )}
           </AnimatePresence>
-        </motion.div>
+        </HomeStatusShell>
 
         {/* Record Button */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.1 }}
-        >
+        <HomeRecordShell>
           <RecordButton
             isRecording={isRecording}
             isProcessing={isProcessing}
             onClick={onRecordToggle}
           />
-        </motion.div>
+        </HomeRecordShell>
 
         {/* Waveform */}
-        <motion.div
-          className="mt-10 w-full max-w-sm"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-        >
+        <HomeWaveShell>
           <Waveform isActive={isRecording} />
-        </motion.div>
+        </HomeWaveShell>
 
         {/* Live Transcription Preview */}
         <AnimatePresence>
@@ -159,7 +225,8 @@ export function HomeScreen({
               exit={{ opacity: 0, y: 20 }}
             >
               <p className="text-sm text-muted-foreground italic">
-                {'"'}...so we need to finalize the design by Friday and share it with the team...{'"'}
+                {'"'}...so we need to finalize the design by Friday and share it
+                with the team...{'"'}
               </p>
             </motion.div>
           )}
@@ -167,7 +234,10 @@ export function HomeScreen({
       </div>
 
       {/* Bottom Sheet */}
-      <BottomSheet recordings={recordings} onRecordingClick={onRecordingClick} />
+      <BottomSheet
+        recordings={recordings}
+        onRecordingClick={onRecordingClick}
+      />
     </div>
   )
 }

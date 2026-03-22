@@ -11,7 +11,7 @@ import {
   Moon,
   Globe,
   Smartphone,
-  LogOut,
+  LogOut
 } from "lucide-react"
 
 interface ProfileScreenProps {
@@ -26,11 +26,14 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
     { icon: Moon, label: "Appearance", status: "Dark" },
     { icon: Globe, label: "Language", status: "English" },
     { icon: Smartphone, label: "Connected Devices", badge: "2" },
-    { icon: HelpCircle, label: "Help & Support" },
+    { icon: HelpCircle, label: "Help & Support" }
   ]
 
   return (
-    <div className="min-h-screen bg-background" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 5rem)' }}>
+    <div
+      className="min-h-screen bg-background"
+      style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 5rem)" }}
+    >
       {/* Header */}
       <div className="px-5 py-6">
         <div className="flex items-center justify-between">
@@ -68,7 +71,9 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
           </div>
           <div className="flex-1">
             <h2 className="text-lg font-extrabold text-foreground">John Doe</h2>
-            <p className="text-sm font-medium text-muted-foreground">john@example.com</p>
+            <p className="text-sm font-medium text-muted-foreground">
+              john@example.com
+            </p>
           </div>
           <motion.button
             className="rounded-xl bg-primary/20 px-4 py-2 text-sm font-medium text-primary"
@@ -107,8 +112,12 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
         </h3>
         <div className="rounded-2xl bg-card/60 border border-border/30 p-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-bold text-muted-foreground">Recording Time</span>
-            <span className="text-sm font-extrabold text-foreground">12h 30m / 20h</span>
+            <span className="text-sm font-bold text-muted-foreground">
+              Recording Time
+            </span>
+            <span className="text-sm font-extrabold text-foreground">
+              12h 30m / 20h
+            </span>
           </div>
           <div className="h-2 rounded-full bg-secondary/50 overflow-hidden">
             <motion.div
@@ -148,7 +157,9 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
                 </span>
               )}
               {item.status && (
-                <span className="text-sm text-muted-foreground">{item.status}</span>
+                <span className="text-sm text-muted-foreground">
+                  {item.status}
+                </span>
               )}
               <ChevronRight className="h-5 w-5 text-muted-foreground" />
             </motion.button>

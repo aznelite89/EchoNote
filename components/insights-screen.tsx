@@ -8,58 +8,64 @@ interface InsightsScreenProps {
   totalDuration: string
 }
 
-export function InsightsScreen({ totalRecordings, totalDuration }: InsightsScreenProps) {
+export function InsightsScreen({
+  totalRecordings,
+  totalDuration
+}: InsightsScreenProps) {
   const stats = [
     {
       icon: Mic,
       label: "Total Recordings",
       value: totalRecordings.toString(),
       change: "+12%",
-      positive: true,
+      positive: true
     },
     {
       icon: Clock,
       label: "Total Duration",
       value: totalDuration,
       change: "+8%",
-      positive: true,
+      positive: true
     },
     {
       icon: Zap,
       label: "Action Items",
       value: "47",
       change: "+23%",
-      positive: true,
+      positive: true
     },
     {
       icon: Calendar,
       label: "This Week",
       value: "12",
       change: "-5%",
-      positive: false,
-    },
+      positive: false
+    }
   ]
 
   const insights = [
     {
       title: "Most Active Day",
       description: "Tuesday with an average of 4 recordings",
-      icon: TrendingUp,
+      icon: TrendingUp
     },
     {
       title: "Common Topics",
       description: "Product roadmap, Sprint planning, Design reviews",
-      icon: BarChart3,
+      icon: BarChart3
     },
     {
       title: "Team Engagement",
       description: "85% of action items completed on time",
-      icon: Zap,
-    },
+      icon: Zap
+    }
   ]
 
   return (
-    <div className="min-h-screen bg-background" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 5rem)' }}>
+    <div
+      className="min-h-screen bg-background"
+      style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 5rem)" }}
+    >
       {/* Header */}
       <div className="px-5 py-6">
         <motion.h1
@@ -102,8 +108,12 @@ export function InsightsScreen({ totalRecordings, totalDuration }: InsightsScree
                   {stat.change}
                 </span>
               </div>
-              <p className="text-2xl font-black text-foreground">{stat.value}</p>
-              <p className="text-xs font-bold text-muted-foreground mt-1">{stat.label}</p>
+              <p className="text-2xl font-black text-foreground">
+                {stat.value}
+              </p>
+              <p className="text-xs font-bold text-muted-foreground mt-1">
+                {stat.label}
+              </p>
             </motion.div>
           ))}
         </div>
@@ -124,14 +134,19 @@ export function InsightsScreen({ totalRecordings, totalDuration }: InsightsScree
             {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day, i) => {
               const heights = [60, 100, 80, 45, 90, 30, 20]
               return (
-                <div key={day} className="flex-1 flex flex-col items-center gap-2">
+                <div
+                  key={day}
+                  className="flex-1 flex flex-col items-center gap-2"
+                >
                   <motion.div
                     className="w-full rounded-lg bg-gradient-to-t from-primary/60 to-primary"
                     initial={{ height: 0 }}
                     animate={{ height: `${heights[i]}%` }}
                     transition={{ delay: 0.4 + i * 0.05, duration: 0.5 }}
                   />
-                  <span className="text-[10px] text-muted-foreground">{day}</span>
+                  <span className="text-[10px] text-muted-foreground">
+                    {day}
+                  </span>
                 </div>
               )
             })}
@@ -158,7 +173,9 @@ export function InsightsScreen({ totalRecordings, totalDuration }: InsightsScree
                   <insight.icon className="h-5 w-5 text-primary" />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-foreground">{insight.title}</h3>
+                  <h3 className="font-extrabold text-foreground">
+                    {insight.title}
+                  </h3>
                   <p className="text-sm font-medium text-muted-foreground mt-0.5">
                     {insight.description}
                   </p>

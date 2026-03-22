@@ -1,13 +1,15 @@
 "use client"
 
-import { useState, useCallback } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { useState, useCallback, useEffect } from "react"
+import { motion, AnimatePresence, useAnimationControls } from "framer-motion"
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { EchoNoteLogo } from "@/components/echonote-logo"
+import { MotionEntrance } from "@/components/motion-entrance"
 import { cn } from "@/lib/utils"
+import { MOTION_SSR_SAFE } from "@/lib/motion-policy"
 
 type AuthMode = "login" | "signup"
 
@@ -35,14 +37,14 @@ function validateName(name: string): string | null {
 }
 
 // Social login button component
-function SocialButton({ 
-  provider, 
-  icon, 
-  onClick 
-}: { 
+function SocialButton({
+  provider,
+  icon,
+  onClick
+}: {
   provider: string
   icon: React.ReactNode
-  onClick: () => void 
+  onClick: () => void
 }) {
   return (
     <Button
@@ -88,6 +90,86 @@ function AppleIcon() {
   )
 }
 
+function AuthModeHeading({ mode }: { mode: AuthMode }) {
+  const controls = useAnimationControls()
+  const [linked, setLinked] = useState(false)
+
+  useEffect(() => {
+    setLinked(true)
+    controls.set({ opacity: 0, y: 10 })
+    void controls.start({ opacity: 1, y: 0, transition: { duration: 0.3 } })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [controls])
+
+  return (
+    <motion.div
+      initial={false}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.3 }}
+      animate={linked ? controls : { opacity: 1, y: 0 }}
+    >
+      <h1 className="text-2xl font-black tracking-tight text-foreground mb-2">
+        {mode === "login" ? "Welcome back" : "Create account"}
+      </h1>
+      <p className="text-sm text-muted-foreground">
+        {mode === "login"
+          ? "Sign in to continue capturing conversations"
+          : "Start your free trial today"}
+      </p>
+    </motion.div>
+  )
+}
+
+function AuthLogoShell({ children }: { children: React.ReactNode }) {
+  if (MOTION_SSR_SAFE) {
+    return (
+      <MotionEntrance
+        className="flex justify-center pt-8 pb-12"
+        staticTarget={{ opacity: 1, y: 0 }}
+        entranceFrom={{ opacity: 0, y: -20 }}
+        entranceTransition={{ duration: 0.5 }}
+      >
+        {children}
+      </MotionEntrance>
+    )
+  }
+  return (
+    <motion.div
+      className="flex justify-center pt-8 pb-12"
+      initial={false}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
+function AuthCardShell({ children }: { children: React.ReactNode }) {
+  if (MOTION_SSR_SAFE) {
+    return (
+      <MotionEntrance
+        className="flex-1 flex flex-col max-w-sm mx-auto w-full"
+        staticTarget={{ opacity: 1, y: 0 }}
+        entranceFrom={{ opacity: 0, y: 20 }}
+        entranceTransition={{ duration: 0.5, delay: 0.2 }}
+      >
+        {children}
+      </MotionEntrance>
+    )
+  }
+  return (
+    <motion.div
+      className="flex-1 flex flex-col max-w-sm mx-auto w-full"
+      initial={false}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.2 }}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
 // Animated background
 function AuthBackground() {
   return (
@@ -97,34 +179,62 @@ function AuthBackground() {
         className="absolute -top-1/3 -left-1/3 h-[600px] w-[600px] rounded-full bg-primary/8 blur-3xl"
         animate={{
           x: [0, 30, 0],
-          y: [0, 20, 0],
+          y: [0, 20, 0]
         }}
         transition={{
           duration: 15,
           repeat: Infinity,
-          ease: "easeInOut",
+          ease: "easeInOut"
         }}
       />
       <motion.div
         className="absolute -bottom-1/3 -right-1/3 h-[500px] w-[500px] rounded-full bg-accent/8 blur-3xl"
         animate={{
           x: [0, -25, 0],
-          y: [0, -15, 0],
+          y: [0, -15, 0]
         }}
         transition={{
           duration: 12,
           repeat: Infinity,
-          ease: "easeInOut",
+          ease: "easeInOut"
         }}
       />
-      
+
       {/* Echo wave decoration */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-5">
         <svg width="400" height="400" viewBox="0 0 400 400" fill="none">
-          <circle cx="200" cy="200" r="180" stroke="currentColor" strokeWidth="1" className="text-primary" />
-          <circle cx="200" cy="200" r="140" stroke="currentColor" strokeWidth="1" className="text-primary" />
-          <circle cx="200" cy="200" r="100" stroke="currentColor" strokeWidth="1" className="text-primary" />
-          <circle cx="200" cy="200" r="60" stroke="currentColor" strokeWidth="2" className="text-primary" />
+          <circle
+            cx="200"
+            cy="200"
+            r="180"
+            stroke="currentColor"
+            strokeWidth="1"
+            className="text-primary"
+          />
+          <circle
+            cx="200"
+            cy="200"
+            r="140"
+            stroke="currentColor"
+            strokeWidth="1"
+            className="text-primary"
+          />
+          <circle
+            cx="200"
+            cy="200"
+            r="100"
+            stroke="currentColor"
+            strokeWidth="1"
+            className="text-primary"
+          />
+          <circle
+            cx="200"
+            cy="200"
+            r="60"
+            stroke="currentColor"
+            strokeWidth="2"
+            className="text-primary"
+          />
         </svg>
       </div>
     </div>
@@ -142,7 +252,7 @@ function AuthInput({
   error,
   showPasswordToggle = false,
   showPassword,
-  onTogglePassword,
+  onTogglePassword
 }: {
   icon: React.ElementType
   label: string
@@ -176,7 +286,11 @@ function AuthInput({
             onClick={onTogglePassword}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
           >
-            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            {showPassword ? (
+              <EyeOff className="h-4 w-4" />
+            ) : (
+              <Eye className="h-4 w-4" />
+            )}
           </button>
         )}
       </div>
@@ -200,61 +314,67 @@ export function AuthScreens({ onAuthSuccess }: AuthScreensProps) {
   const [mode, setMode] = useState<AuthMode>("login")
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-  
+
   // Form state
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  
+
   // Error state
   const [errors, setErrors] = useState<{
     name?: string | null
     email?: string | null
     password?: string | null
   }>({})
-  
+
   const [touched, setTouched] = useState<{
     name?: boolean
     email?: boolean
     password?: boolean
   }>({})
 
-  const handleSubmit = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    // Validate all fields
-    const newErrors: typeof errors = {}
-    
-    if (mode === "signup") {
-      newErrors.name = validateName(name)
-    }
-    newErrors.email = validateEmail(email)
-    newErrors.password = validatePassword(password)
-    
-    setErrors(newErrors)
-    setTouched({ name: true, email: true, password: true })
-    
-    // Check if any errors
-    if (Object.values(newErrors).some(error => error !== null)) {
-      return
-    }
-    
-    setIsLoading(true)
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    
-    setIsLoading(false)
-    onAuthSuccess()
-  }, [mode, name, email, password, onAuthSuccess])
+  const handleSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault()
 
-  const handleSocialLogin = useCallback(async (provider: string) => {
-    setIsLoading(true)
-    // Simulate social login
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    setIsLoading(false)
-    onAuthSuccess()
-  }, [onAuthSuccess])
+      // Validate all fields
+      const newErrors: typeof errors = {}
+
+      if (mode === "signup") {
+        newErrors.name = validateName(name)
+      }
+      newErrors.email = validateEmail(email)
+      newErrors.password = validatePassword(password)
+
+      setErrors(newErrors)
+      setTouched({ name: true, email: true, password: true })
+
+      // Check if any errors
+      if (Object.values(newErrors).some((error) => error !== null)) {
+        return
+      }
+
+      setIsLoading(true)
+
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1500))
+
+      setIsLoading(false)
+      onAuthSuccess()
+    },
+    [mode, name, email, password, onAuthSuccess]
+  )
+
+  const handleSocialLogin = useCallback(
+    async (provider: string) => {
+      setIsLoading(true)
+      // Simulate social login
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      setIsLoading(false)
+      onAuthSuccess()
+    },
+    [onAuthSuccess]
+  )
 
   const toggleMode = useCallback(() => {
     setMode(mode === "login" ? "signup" : "login")
@@ -266,70 +386,69 @@ export function AuthScreens({ onAuthSuccess }: AuthScreensProps) {
   }, [mode])
 
   return (
-    <div className="relative min-h-screen bg-background flex flex-col" style={{ paddingTop: 'env(safe-area-inset-top)' }}>
+    <div
+      className="relative min-h-screen bg-background flex flex-col"
+      style={{ paddingTop: "env(safe-area-inset-top)" }}
+    >
       <AuthBackground />
-      
+
       <div className="relative z-10 flex-1 flex flex-col px-6 py-8">
         {/* Logo */}
-        <motion.div 
-          className="flex justify-center pt-8 pb-12"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
+        <AuthLogoShell>
           <EchoNoteLogo size="lg" animated />
-        </motion.div>
-        
+        </AuthLogoShell>
+
         {/* Auth Card */}
-        <motion.div
-          className="flex-1 flex flex-col max-w-sm mx-auto w-full"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
+        <AuthCardShell>
           {/* Header */}
           <div className="text-center mb-8">
             <AnimatePresence mode="wait">
-              <motion.div
-                key={mode}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
-              >
-                <h1 className="text-2xl font-black tracking-tight text-foreground mb-2">
-                  {mode === "login" ? "Welcome back" : "Create account"}
-                </h1>
-                <p className="text-sm text-muted-foreground">
-                  {mode === "login" 
-                    ? "Sign in to continue capturing conversations" 
-                    : "Start your free trial today"}
-                </p>
-              </motion.div>
+              {MOTION_SSR_SAFE ? (
+                <AuthModeHeading key={mode} mode={mode} />
+              ) : (
+                <motion.div
+                  key={mode}
+                  initial={false}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <h1 className="text-2xl font-black tracking-tight text-foreground mb-2">
+                    {mode === "login" ? "Welcome back" : "Create account"}
+                  </h1>
+                  <p className="text-sm text-muted-foreground">
+                    {mode === "login"
+                      ? "Sign in to continue capturing conversations"
+                      : "Start your free trial today"}
+                  </p>
+                </motion.div>
+              )}
             </AnimatePresence>
           </div>
-          
+
           {/* Social Login */}
           <div className="flex gap-3 mb-6">
-            <SocialButton 
-              provider="google" 
-              icon={<GoogleIcon />} 
-              onClick={() => handleSocialLogin("google")} 
+            <SocialButton
+              provider="google"
+              icon={<GoogleIcon />}
+              onClick={() => handleSocialLogin("google")}
             />
-            <SocialButton 
-              provider="apple" 
-              icon={<AppleIcon />} 
-              onClick={() => handleSocialLogin("apple")} 
+            <SocialButton
+              provider="apple"
+              icon={<AppleIcon />}
+              onClick={() => handleSocialLogin("apple")}
             />
           </div>
-          
+
           {/* Divider */}
           <div className="flex items-center gap-3 mb-6">
             <div className="flex-1 h-px bg-border/50" />
-            <span className="text-xs text-muted-foreground uppercase tracking-wider">or continue with email</span>
+            <span className="text-xs text-muted-foreground uppercase tracking-wider">
+              or continue with email
+            </span>
             <div className="flex-1 h-px bg-border/50" />
           </div>
-          
+
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <AnimatePresence mode="wait">
@@ -348,7 +467,10 @@ export function AuthScreens({ onAuthSuccess }: AuthScreensProps) {
                     onChange={(value) => {
                       setName(value)
                       if (touched.name) {
-                        setErrors(prev => ({ ...prev, name: validateName(value) }))
+                        setErrors((prev) => ({
+                          ...prev,
+                          name: validateName(value)
+                        }))
                       }
                     }}
                     placeholder="John Doe"
@@ -357,7 +479,7 @@ export function AuthScreens({ onAuthSuccess }: AuthScreensProps) {
                 </motion.div>
               )}
             </AnimatePresence>
-            
+
             <AuthInput
               icon={Mail}
               label="Email"
@@ -366,13 +488,16 @@ export function AuthScreens({ onAuthSuccess }: AuthScreensProps) {
               onChange={(value) => {
                 setEmail(value)
                 if (touched.email) {
-                  setErrors(prev => ({ ...prev, email: validateEmail(value) }))
+                  setErrors((prev) => ({
+                    ...prev,
+                    email: validateEmail(value)
+                  }))
                 }
               }}
               placeholder="you@example.com"
               error={touched.email ? errors.email : null}
             />
-            
+
             <AuthInput
               icon={Lock}
               label="Password"
@@ -381,7 +506,10 @@ export function AuthScreens({ onAuthSuccess }: AuthScreensProps) {
               onChange={(value) => {
                 setPassword(value)
                 if (touched.password) {
-                  setErrors(prev => ({ ...prev, password: validatePassword(value) }))
+                  setErrors((prev) => ({
+                    ...prev,
+                    password: validatePassword(value)
+                  }))
                 }
               }}
               placeholder="Enter your password"
@@ -390,7 +518,7 @@ export function AuthScreens({ onAuthSuccess }: AuthScreensProps) {
               showPassword={showPassword}
               onTogglePassword={() => setShowPassword(!showPassword)}
             />
-            
+
             {mode === "login" && (
               <div className="flex justify-end">
                 <button
@@ -401,7 +529,7 @@ export function AuthScreens({ onAuthSuccess }: AuthScreensProps) {
                 </button>
               </div>
             )}
-            
+
             {/* Submit Button */}
             <Button
               type="submit"
@@ -422,7 +550,7 @@ export function AuthScreens({ onAuthSuccess }: AuthScreensProps) {
               )}
             </Button>
           </form>
-          
+
           {/* Password requirements for signup */}
           <AnimatePresence>
             {mode === "signup" && password.length > 0 && (
@@ -432,26 +560,28 @@ export function AuthScreens({ onAuthSuccess }: AuthScreensProps) {
                 exit={{ opacity: 0, height: 0 }}
                 className="mt-4 space-y-2"
               >
-                <PasswordRequirement 
-                  met={password.length >= 8} 
-                  text="At least 8 characters" 
+                <PasswordRequirement
+                  met={password.length >= 8}
+                  text="At least 8 characters"
                 />
-                <PasswordRequirement 
-                  met={/[A-Z]/.test(password)} 
-                  text="One uppercase letter" 
+                <PasswordRequirement
+                  met={/[A-Z]/.test(password)}
+                  text="One uppercase letter"
                 />
-                <PasswordRequirement 
-                  met={/[0-9]/.test(password)} 
-                  text="One number" 
+                <PasswordRequirement
+                  met={/[0-9]/.test(password)}
+                  text="One number"
                 />
               </motion.div>
             )}
           </AnimatePresence>
-          
+
           {/* Toggle Mode */}
           <div className="mt-8 text-center">
             <span className="text-sm text-muted-foreground">
-              {mode === "login" ? "Don't have an account? " : "Already have an account? "}
+              {mode === "login"
+                ? "Don't have an account? "
+                : "Already have an account? "}
             </span>
             <button
               type="button"
@@ -461,22 +591,26 @@ export function AuthScreens({ onAuthSuccess }: AuthScreensProps) {
               {mode === "login" ? "Sign Up" : "Sign In"}
             </button>
           </div>
-          
+
           {/* Terms */}
           {mode === "signup" && (
-            <motion.p 
+            <motion.p
               className="mt-6 text-xs text-muted-foreground text-center leading-relaxed"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
             >
               By creating an account, you agree to our{" "}
-              <button className="text-primary hover:underline">Terms of Service</button>
-              {" "}and{" "}
-              <button className="text-primary hover:underline">Privacy Policy</button>
+              <button className="text-primary hover:underline">
+                Terms of Service
+              </button>{" "}
+              and{" "}
+              <button className="text-primary hover:underline">
+                Privacy Policy
+              </button>
             </motion.p>
           )}
-        </motion.div>
+        </AuthCardShell>
       </div>
     </div>
   )
@@ -485,21 +619,25 @@ export function AuthScreens({ onAuthSuccess }: AuthScreensProps) {
 // Password requirement indicator
 function PasswordRequirement({ met, text }: { met: boolean; text: string }) {
   return (
-    <motion.div 
+    <motion.div
       className="flex items-center gap-2 text-xs"
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
     >
-      <div className={cn(
-        "h-4 w-4 rounded-full flex items-center justify-center transition-colors duration-300",
-        met ? "bg-green-500/20" : "bg-muted"
-      )}>
+      <div
+        className={cn(
+          "h-4 w-4 rounded-full flex items-center justify-center transition-colors duration-300",
+          met ? "bg-green-500/20" : "bg-muted"
+        )}
+      >
         {met && <Check className="h-2.5 w-2.5 text-green-500" />}
       </div>
-      <span className={cn(
-        "transition-colors duration-300",
-        met ? "text-green-500" : "text-muted-foreground"
-      )}>
+      <span
+        className={cn(
+          "transition-colors duration-300",
+          met ? "text-green-500" : "text-muted-foreground"
+        )}
+      >
         {text}
       </span>
     </motion.div>

@@ -1,7 +1,14 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Search, Filter, Video, Phone, Users, MessageSquare } from "lucide-react"
+import {
+  Search,
+  Filter,
+  Video,
+  Phone,
+  Users,
+  MessageSquare
+} from "lucide-react"
 import type { Recording } from "@/types/recording"
 import { RecordingCard } from "./recording-card"
 import { useState } from "react"
@@ -18,15 +25,19 @@ const filters: { id: FilterType; label: string; icon?: any }[] = [
   { id: "meeting", label: "Meetings", icon: Video },
   { id: "call", label: "Calls", icon: Phone },
   { id: "interview", label: "Interviews", icon: Users },
-  { id: "chat", label: "Chats", icon: MessageSquare },
+  { id: "chat", label: "Chats", icon: MessageSquare }
 ]
 
-export function HistoryScreen({ recordings, onRecordingClick }: HistoryScreenProps) {
+export function HistoryScreen({
+  recordings,
+  onRecordingClick
+}: HistoryScreenProps) {
   const [activeFilter, setActiveFilter] = useState<FilterType>("all")
   const [searchQuery, setSearchQuery] = useState("")
 
   const filteredRecordings = recordings.filter((recording) => {
-    const matchesFilter = activeFilter === "all" || recording.type === activeFilter
+    const matchesFilter =
+      activeFilter === "all" || recording.type === activeFilter
     const matchesSearch =
       searchQuery === "" ||
       recording.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -52,7 +63,10 @@ export function HistoryScreen({ recordings, onRecordingClick }: HistoryScreenPro
   )
 
   return (
-    <div className="min-h-screen bg-background pb-32" style={{ paddingBottom: 'calc(env(safe-area-inset-bottom) + 5rem)' }}>
+    <div
+      className="min-h-screen bg-background pb-32"
+      style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 5rem)" }}
+    >
       {/* Header */}
       <div className="px-5 py-6">
         <motion.h1
@@ -122,34 +136,36 @@ export function HistoryScreen({ recordings, onRecordingClick }: HistoryScreenPro
 
       {/* Recordings List */}
       <div className="px-5">
-        {Object.entries(groupedRecordings).map(([date, dateRecordings], groupIndex) => (
-          <motion.div
-            key={date}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 + groupIndex * 0.05 }}
-            className="mb-6"
-          >
-            <h3 className="mb-3 text-xs font-black text-muted-foreground uppercase tracking-widest">
-              {date}
-            </h3>
-            <div className="flex flex-col gap-3">
-              {dateRecordings.map((recording, i) => (
-                <motion.div
-                  key={recording.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.25 + groupIndex * 0.05 + i * 0.03 }}
-                >
-                  <RecordingCard
-                    recording={recording}
-                    onClick={() => onRecordingClick(recording)}
-                  />
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-        ))}
+        {Object.entries(groupedRecordings).map(
+          ([date, dateRecordings], groupIndex) => (
+            <motion.div
+              key={date}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 + groupIndex * 0.05 }}
+              className="mb-6"
+            >
+              <h3 className="mb-3 text-xs font-black text-muted-foreground uppercase tracking-widest">
+                {date}
+              </h3>
+              <div className="flex flex-col gap-3">
+                {dateRecordings.map((recording, i) => (
+                  <motion.div
+                    key={recording.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.25 + groupIndex * 0.05 + i * 0.03 }}
+                  >
+                    <RecordingCard
+                      recording={recording}
+                      onClick={() => onRecordingClick(recording)}
+                    />
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          )
+        )}
 
         {filteredRecordings.length === 0 && (
           <motion.div
