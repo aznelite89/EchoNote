@@ -183,9 +183,6 @@ importers:
       '@types/react-dom':
         specifier: 19.2.3
         version: 19.2.3(@types/react@19.2.14)
-      '@types/redux-saga':
-        specifier: ^0.10.5
-        version: 0.10.5
       postcss:
         specifier: ^8.5
         version: 8.5.6
@@ -1282,10 +1279,6 @@ packages:
 
   '@types/react@19.2.14':
     resolution: {integrity: sha512-ilcTH/UniCkMdtexkoCN0bI7pMcJDvmQFPvuPvmEaYA/NSfFTAgdUSLAoVjaRJm7+6PvcM+q1zYOwS4wTYMF9w==}
-
-  '@types/redux-saga@0.10.5':
-    resolution: {integrity: sha512-sqan7rs+PylBB5u2reL1hm+f0pDsZY1D1/o1vtgjrS4ErjxthK59zKCQyZhSLRcQDiOh3Pwp4fNQyn4A0CTdGA==}
-    deprecated: This is a stub types definition for redux-saga (https://github.com/redux-saga/redux-saga). redux-saga provides its own type definitions, so you don't need @types/redux-saga installed!
 
   '@types/use-sync-external-store@0.0.6':
     resolution: {integrity: sha512-zFDAD+tlpf2r4asuHEj0XH6pY6i0g5NeAHPn+15wk3BV6JA69eERFXC1gyGThDkVa1zCyKr5jox1+2LbV/AMLg==}
@@ -2895,10 +2888,6 @@ snapshots:
   '@types/react@19.2.14':
     dependencies:
       csstype: 3.2.3
-
-  '@types/redux-saga@0.10.5':
-    dependencies:
-      redux-saga: 1.4.2
 
   '@types/use-sync-external-store@0.0.6': {}
 
