@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label"
 import { EchoNoteLogo } from "@/components/echonote-logo"
 import { cn } from "@/lib/utils"
 import { MOTION_SSR_SAFE } from "@/lib/motion-policy"
+import { toast, Toaster } from "sonner"
+import { apiLogin, apiRegister } from "@/lib/api"
 
 type AuthMode = "login" | "signup"
 
@@ -310,25 +312,29 @@ export function AuthScreens({ onAuthSuccess }: AuthScreensProps) {
 
       setIsLoading(true)
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-
-      setIsLoading(false)
-      onAuthSuccess()
+      try {
+        if (mode === "signup") {
+          const { tokens } = await apiRegister(email, name, password)
+          localStorage.setItem("accessToken", tokens.accessToken)
+          localStorage.setItem("refreshToken", tokens.refreshToken)
+        } else {
+          const { tokens } = await apiLogin(email, password)
+          localStorage.setItem("accessToken", tokens.accessToken)
+          localStorage.setItem("refreshToken", tokens.refreshToken)
+        }
+        onAuthSuccess()
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : "Authentication failed")
+      } finally {
+        setIsLoading(false)
+      }
     },
     [mode, name, email, password, onAuthSuccess]
   )
 
-  const handleSocialLogin = useCallback(
-    async (provider: string) => {
-      setIsLoading(true)
-      // Simulate social login
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      setIsLoading(false)
-      onAuthSuccess()
-    },
-    [onAuthSuccess]
-  )
+  const handleSocialLogin = useCallback((_provider: string) => {
+    toast.error("Social login is not supported yet")
+  }, [])
 
   const toggleMode = useCallback(() => {
     setMode(mode === "login" ? "signup" : "login")
@@ -344,6 +350,7 @@ export function AuthScreens({ onAuthSuccess }: AuthScreensProps) {
       className="relative min-h-screen bg-background flex flex-col"
       style={{ paddingTop: "env(safe-area-inset-top)" }}
     >
+      <Toaster position="top-center" theme="dark" />
       <AuthBackground />
 
       <div className="relative z-10 flex-1 flex flex-col px-6 py-8">
