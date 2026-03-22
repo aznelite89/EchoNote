@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
-import { useHydrated } from "@/lib/hooks/use-hydrated"
 import { MOTION_SSR_SAFE } from "@/lib/motion-policy"
 
 interface EchoNoteLogoProps {
@@ -26,9 +25,8 @@ export function EchoNoteLogo({
   animated = true
 }: EchoNoteLogoProps) {
   const config = sizeConfig[size]
-  const hydrated = useHydrated()
-  /** Prod: play ring/line intro only after hydrate (SSR HTML stays visible). Dev: skip hidden `initial` so prerender is never stuck at opacity 0. */
-  const runIntro = animated && (MOTION_SSR_SAFE ? hydrated : false)
+  /** Production: full ring/line intro (classic `animated`). Dev: no hidden SSR `initial` so local prerender stays readable. */
+  const runIntro = animated && MOTION_SSR_SAFE
 
   return (
     <div className={cn("flex items-center", config.gap, className)}>

@@ -30,9 +30,19 @@ export function MotionEntrance({
   const [linked, setLinked] = useState(false)
 
   useEffect(() => {
-    setLinked(true)
-    controls.set(entranceFrom)
-    void controls.start({ ...staticTarget, transition: entranceTransition })
+    const id = requestAnimationFrame(() => {
+      setLinked(true)
+      controls.set(entranceFrom)
+      void controls.start({
+        ...staticTarget,
+        transition: {
+          type: "tween",
+          ease: [0.22, 1, 0.36, 1],
+          ...entranceTransition,
+        },
+      })
+    })
+    return () => cancelAnimationFrame(id)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [controls])
 

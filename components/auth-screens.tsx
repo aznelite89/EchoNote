@@ -95,9 +95,16 @@ function AuthModeHeading({ mode }: { mode: AuthMode }) {
   const [linked, setLinked] = useState(false)
 
   useEffect(() => {
-    setLinked(true)
-    controls.set({ opacity: 0, y: 10 })
-    void controls.start({ opacity: 1, y: 0, transition: { duration: 0.3 } })
+    const id = requestAnimationFrame(() => {
+      setLinked(true)
+      controls.set({ opacity: 0, y: 10 })
+      void controls.start({
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] },
+      })
+    })
+    return () => cancelAnimationFrame(id)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [controls])
 
@@ -200,8 +207,20 @@ function AuthBackground() {
         }}
       />
 
-      {/* Echo wave decoration */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-5">
+      {/* Echo wave decoration — subtle breathe so motion is visible on static screenshots vs idle */}
+      <motion.div
+        className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 text-primary"
+        initial={{ opacity: 0.04 }}
+        animate={{
+          opacity: [0.04, 0.1, 0.04],
+          scale: [1, 1.02, 1],
+        }}
+        transition={{
+          duration: 5,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+      >
         <svg width="400" height="400" viewBox="0 0 400 400" fill="none">
           <circle
             cx="200"
@@ -209,7 +228,6 @@ function AuthBackground() {
             r="180"
             stroke="currentColor"
             strokeWidth="1"
-            className="text-primary"
           />
           <circle
             cx="200"
@@ -217,7 +235,6 @@ function AuthBackground() {
             r="140"
             stroke="currentColor"
             strokeWidth="1"
-            className="text-primary"
           />
           <circle
             cx="200"
@@ -225,7 +242,6 @@ function AuthBackground() {
             r="100"
             stroke="currentColor"
             strokeWidth="1"
-            className="text-primary"
           />
           <circle
             cx="200"
@@ -233,10 +249,9 @@ function AuthBackground() {
             r="60"
             stroke="currentColor"
             strokeWidth="2"
-            className="text-primary"
           />
         </svg>
-      </div>
+      </motion.div>
     </div>
   )
 }
