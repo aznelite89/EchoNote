@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Nunito } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
+import ReduxProvider from '@/components/redux-provider'
 
 const nunito = Nunito({
   subsets: ["latin"],
@@ -31,7 +32,7 @@ const RootLayout = ({
   return (
     <html lang="en" className="dark">
       <body className={`${nunito.variable} font-sans antialiased`}>
-        {children}
+        <ReduxProvider>{children}</ReduxProvider>
         <Analytics />
       </body>
     </html>

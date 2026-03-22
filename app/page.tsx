@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo } from "react"
 import { AnimatePresence } from "framer-motion"
 import AuthScreens from "@/components/auth-screens"
 import BottomNav from "@/components/bottom-nav"
@@ -10,102 +10,88 @@ import InsightsScreen from "@/components/insights-screen"
 import ProfileScreen from "@/components/profile-screen"
 import SummaryScreen from "@/components/summary-screen"
 import { useRecorder } from "@/hooks/use-recorder"
-import { apiListRecordings, apiDeleteRecording, apiUpdateRecordingTitle } from "@/lib/recording-api"
-import { toast } from "sonner"
+import { useAppDispatch, useAppSelector } from "@/store/hooks"
+import { setIsAuthenticated } from "@/slices/sessionSlice"
+import { setActiveTab, type Tab } from "@/slices/navigationSlice"
+import {
+  prependRecording,
+  removeRecording,
+  setSelectedRecording,
+  updateRecordingTitleRequest,
+} from "@/slices/recordingsSlice"
 import type { Recording } from "@/types/recording"
 
-type Tab = "home" | "history" | "insights" | "profile"
-
 const ConvoAI = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const dispatch = useAppDispatch()
+  const isAuthenticated = useAppSelector((s) =>
+    Boolean(s.session.get("isAuthenticated"))
+  )
+  const activeTab = useAppSelector((s) => s.navigation.get("activeTab") as Tab)
+  const recordingsList = useAppSelector((s) => s.recordings.get("recordings"))
+  const selectedImmutable = useAppSelector((s) =>
+    s.recordings.get("selectedRecording")
+  )
 
-  // Restore auth state from localStorage after hydration
+  const recordings = useMemo(
+    () => recordingsList.toJS() as Recording[],
+    [recordingsList]
+  )
+  const selectedRecording = useMemo((): Recording | null => {
+    if (selectedImmutable == null) return null
+    return selectedImmutable.toJS() as Recording
+  }, [selectedImmutable])
+
+  const { isRecording, isProcessing, recordingTime, liveTranscript, latestRecording, toggleRecording } =
+    useRecorder()
+
   useEffect(() => {
-    if (localStorage.getItem("accessToken")) {
-      setIsAuthenticated(true)
+    if (typeof window !== "undefined" && localStorage.getItem("accessToken")) {
+      dispatch(setIsAuthenticated(true))
     }
-  }, [])
-  const [activeTab, setActiveTab] = useState<Tab>("home")
-  const [selectedRecording, setSelectedRecording] = useState<Recording | null>(null)
-  const [recordings, setRecordings] = useState<Recording[]>([])
+  }, [dispatch])
 
-  const { isRecording, isProcessing, recordingTime, liveTranscript, latestRecording, toggleRecording } = useRecorder()
-
-  // Fetch recordings from backend on auth
-  useEffect(() => {
-    if (isAuthenticated) {
-      apiListRecordings().then(setRecordings)
-    }
-  }, [isAuthenticated])
-
-  // Prepend new recording when it arrives from the hook
   useEffect(() => {
     if (latestRecording) {
-      setRecordings((prev) => [latestRecording, ...prev])
+      dispatch(prependRecording(latestRecording))
     }
-  }, [latestRecording])
+  }, [latestRecording, dispatch])
 
-  const handleRecordingClick = useCallback((recording: Recording) => {
-    setSelectedRecording(recording)
-  }, [])
+  const handleRecordingClick = useCallback(
+    (recording: Recording) => {
+      dispatch(setSelectedRecording(recording))
+    },
+    [dispatch]
+  )
 
   const handleBackFromSummary = useCallback(() => {
-    setSelectedRecording(null)
-  }, [])
+    dispatch(setSelectedRecording(null))
+  }, [dispatch])
 
-  const handleRecordingTitleChange = useCallback(async (id: string, newTitle: string) => {
-    let previousTitle = ""
-
-    setRecordings((prev) => {
-      const cur = prev.find((r) => r.id === id)
-      if (cur) previousTitle = cur.title
-      return prev.map((r) => (r.id === id ? { ...r, title: newTitle } : r))
-    })
-
-    setSelectedRecording((sel) => {
-      if (sel?.id === id) {
-        if (previousTitle === "") previousTitle = sel.title
-        return { ...sel, title: newTitle }
-      }
-      return sel
-    })
-
-    try {
-      await apiUpdateRecordingTitle(id, newTitle)
-    } catch {
-      toast.error("Failed to update title")
-      const revert = previousTitle
-      setRecordings((prev) =>
-        prev.map((r) => (r.id === id ? { ...r, title: revert } : r))
-      )
-      setSelectedRecording((sel) =>
-        sel?.id === id ? { ...sel, title: revert } : sel
-      )
-    }
-  }, [])
+  const handleRecordingTitleChange = useCallback(
+    async (id: string, newTitle: string) => {
+      dispatch(updateRecordingTitleRequest({ id, newTitle }))
+    },
+    [dispatch]
+  )
 
   const handleAuthSuccess = useCallback(() => {
-    setIsAuthenticated(true)
-  }, [])
+    dispatch(setIsAuthenticated(true))
+  }, [dispatch])
 
-  const handleDeleteRecording = useCallback(async (id: string) => {
-    setRecordings((prev) => prev.filter((r) => r.id !== id))
-    try {
-      await apiDeleteRecording(id)
-    } catch {
-      toast.error("Failed to delete recording")
-      apiListRecordings().then(setRecordings)
-    }
-  }, [])
+  const handleDeleteRecording = useCallback(
+    async (id: string) => {
+      dispatch(removeRecording(id))
+    },
+    [dispatch]
+  )
 
   const handleLogout = useCallback(() => {
     localStorage.removeItem("accessToken")
     localStorage.removeItem("refreshToken")
-    setIsAuthenticated(false)
-    setActiveTab("home")
-  }, [])
+    dispatch(setIsAuthenticated(false))
+    dispatch(setActiveTab("home"))
+  }, [dispatch])
 
-  // Show auth screens if not authenticated
   if (!isAuthenticated) {
     return <AuthScreens onAuthSuccess={handleAuthSuccess} />
   }
@@ -159,7 +145,7 @@ const ConvoAI = () => {
 
       {/* Bottom Navigation */}
       {!selectedRecording && (
-        <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
+        <BottomNav activeTab={activeTab} onTabChange={(t) => dispatch(setActiveTab(t))} />
       )}
     </main>
   )

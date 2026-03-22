@@ -2,8 +2,13 @@
 
 ## 2026-03-22
 
+### Added
+
+- `@reduxjs/toolkit`, `react-redux`, `redux-saga`, `immutable` — client Redux store (`makeStore`), `slices/*` (Immutable `fromJS` / `merge`-style reducers via `createAction` + manual reducers), `sagas/*` (session, common, recordings), `store/root-state.ts` / `store/hooks.ts`, `components/redux-provider.tsx` wrapping the app in `app/layout.tsx`
+
 ### Changed
 
+- `app/page.tsx` — auth, tab, recordings, selection, and title/delete flows use `useAppDispatch` / `useAppSelector`; list fetch on login/logout and API side effects run through sagas
 - `app/page.tsx`, `app/layout.tsx`, and custom `components/*` (excluding `components/ui/*`) — arrow function components with default exports; imports grouped (React → libraries → `@/` → relative)
 - `components/ui/*` — `function` declarations converted to `const … = (…) =>` / `export const …` (named exports unchanged); `toaster.tsx` uses an arrow in `toasts.map`
 - `scripts/convert-ui-to-arrows.mjs` — one-off helper to rewrite statement-start `function`/`export function` in `components/ui` (skips callbacks after `.map(`-style line breaks)
