@@ -8,7 +8,7 @@ import { RecordingCard } from "./recording-card"
 interface BottomSheetProps {
   recordings: Recording[]
   onRecordingClick: (recording: Recording) => void
-  onRecordingDelete?: (id: string) => void
+  onRecordingDelete?: (id: string) => void | Promise<void>
 }
 
 export function BottomSheet({
@@ -90,7 +90,7 @@ export function BottomSheet({
                 key={recording.id}
                 recording={recording}
                 onClick={() => onRecordingClick(recording)}
-                onDelete={onRecordingDelete}
+                onRecordingDelete={onRecordingDelete}
               />
             ))}
           </div>

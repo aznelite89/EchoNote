@@ -16,7 +16,7 @@ import { useState } from "react"
 interface HistoryScreenProps {
   recordings: Recording[]
   onRecordingClick: (recording: Recording) => void
-  onRecordingDelete?: (id: string) => void
+  onRecordingDelete?: (id: string) => void | Promise<void>
 }
 
 type FilterType = "all" | "meeting" | "call" | "interview" | "chat"
@@ -161,7 +161,7 @@ export function HistoryScreen({
                     <RecordingCard
                       recording={recording}
                       onClick={() => onRecordingClick(recording)}
-                      onDelete={onRecordingDelete}
+                      onRecordingDelete={onRecordingDelete}
                     />
                   </motion.div>
                 ))}

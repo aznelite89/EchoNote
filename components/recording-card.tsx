@@ -5,10 +5,10 @@ import { motion, useMotionValue, useTransform, useAnimationControls, type PanInf
 import { Video, Phone, Users, MessageSquare, Trash2 } from "lucide-react"
 import type { Recording } from "@/types/recording"
 
-interface RecordingCardProps {
+export interface RecordingCardProps {
   recording: Recording
   onClick: () => void
-  onDelete?: (id: string) => void
+  onRecordingDelete?: (id: string) => void | Promise<void>
 }
 
 const typeIcons = {
@@ -21,7 +21,11 @@ const typeIcons = {
 const DELETE_WIDTH = 80
 const SNAP_THRESHOLD = -50
 
-export function RecordingCard({ recording, onClick, onDelete }: RecordingCardProps) {
+export function RecordingCard({
+  recording,
+  onClick,
+  onRecordingDelete,
+}: RecordingCardProps) {
   const Icon = typeIcons[recording.type]
   const x = useMotionValue(0)
   const controls = useAnimationControls()
@@ -48,13 +52,13 @@ export function RecordingCard({ recording, onClick, onDelete }: RecordingCardPro
   }
 
   const handleDelete = () => {
-    onDelete?.(recording.id)
+    void onRecordingDelete?.(recording.id)
   }
 
   return (
     <div className="relative overflow-hidden rounded-2xl">
       {/* Delete button behind the card */}
-      {onDelete && (
+      {onRecordingDelete && (
         <motion.button
           className="absolute right-0 top-0 bottom-0 flex w-20 items-center justify-center bg-red-500"
           style={{ opacity: deleteOpacity }}
@@ -70,11 +74,11 @@ export function RecordingCard({ recording, onClick, onDelete }: RecordingCardPro
         className="relative z-10 w-full rounded-2xl bg-card/60 p-4 text-left backdrop-blur-sm border border-border/30 transition-colors hover:bg-card/80"
         style={{ x }}
         animate={controls}
-        drag={onDelete ? "x" : false}
+        drag={onRecordingDelete ? "x" : false}
         dragConstraints={{ left: -DELETE_WIDTH, right: 0 }}
         dragElastic={0.1}
         onDragEnd={handleDragEnd}
-        whileTap={onDelete ? undefined : { scale: 0.99 }}
+        whileTap={onRecordingDelete ? undefined : { scale: 0.99 }}
       >
         <div className="flex items-start gap-3">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10">

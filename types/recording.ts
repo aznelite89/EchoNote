@@ -1,3 +1,10 @@
+export type RecordingStatus =
+  | "uploading"
+  | "transcribing"
+  | "summarizing"
+  | "ready"
+  | "error"
+
 export interface Recording {
   id: string
   title: string
@@ -6,7 +13,8 @@ export interface Recording {
   durationFormatted?: string
   timestamp: string
   type: "meeting" | "call" | "interview" | "chat"
-  status?: "uploading" | "transcribing" | "summarizing" | "ready" | "error"
+  /** Present on API payloads; default when missing (e.g. cached UI state). */
+  status: RecordingStatus
   transcript?: string
   keyPoints?: string[]
   actionItems?: ActionItem[]

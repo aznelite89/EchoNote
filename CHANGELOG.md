@@ -2,6 +2,12 @@
 
 ## 2026-03-22
 
+### Fixed
+
+- `components/home-screen.tsx` — exported `HomeScreenProps` with required `liveTranscript` and async-friendly `onRecordToggle` / `onRecordingDelete` types
+- `components/recording-card.tsx` — swipe delete prop renamed to `onRecordingDelete` (exported `RecordingCardProps`); matches `HistoryScreen` / `BottomSheet` and accepts async handlers
+- `types/recording.ts` — `Recording.status` is required (exported `RecordingStatus`); `lib/recording-api.ts` defaults missing `status` to `"ready"` after fetch
+
 ### Added
 
 - `lib/recording-api.ts` — `apiUpdateRecordingTitle()` calls `PATCH /recordings/:id` with JSON `{ title }`

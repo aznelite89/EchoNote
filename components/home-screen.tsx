@@ -7,15 +7,16 @@ import { Waveform } from "./waveform"
 import { BottomSheet } from "./bottom-sheet"
 import type { Recording } from "@/types/recording"
 
-interface HomeScreenProps {
+export interface HomeScreenProps {
   isRecording: boolean
   isProcessing: boolean
   recordingTime: string
-  liveTranscript?: string
-  onRecordToggle: () => void
+  /** Live speech-to-text while recording (Web Speech API). */
+  liveTranscript: string
+  onRecordToggle: () => void | Promise<void>
   recordings: Recording[]
   onRecordingClick: (recording: Recording) => void
-  onRecordingDelete?: (id: string) => void
+  onRecordingDelete?: (id: string) => void | Promise<void>
 }
 
 /** Production: classic Framer entrance. Dev: no entrance (`initial={false}`) so layout is visible immediately. */

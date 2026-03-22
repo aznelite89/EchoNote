@@ -24,6 +24,15 @@ function authHeaders(): Record<string, string> {
   return token ? { Authorization: `Bearer ${token}` } : {}
 }
 
+function normalizeRecordingFields(
+  rec: Recording & { durationFormatted?: string }
+): Recording {
+  if (rec.durationFormatted) rec.duration = rec.durationFormatted
+  if (rec.timestamp) rec.timestamp = formatTimestamp(rec.timestamp)
+  if (!rec.status) rec.status = "ready"
+  return rec
+}
+
 function handleUnauthorized(res: Response): void {
   if (res.status === 401 && typeof window !== "undefined") {
     localStorage.removeItem("accessToken")
@@ -57,9 +66,7 @@ export async function apiCreateRecording(
   }
 
   const rec: Recording & { durationFormatted?: string } = await res.json()
-  if (rec.durationFormatted) rec.duration = rec.durationFormatted
-  if (rec.timestamp) rec.timestamp = formatTimestamp(rec.timestamp)
-  return rec
+  return normalizeRecordingFields(rec)
 }
 
 export async function apiListRecordings(limit = 20): Promise<Recording[]> {
@@ -73,11 +80,7 @@ export async function apiListRecordings(limit = 20): Promise<Recording[]> {
   }
 
   const body: { recordings: (Recording & { durationFormatted?: string })[] } = await res.json()
-  return (body.recordings ?? []).map((rec) => {
-    if (rec.durationFormatted) rec.duration = rec.durationFormatted
-    if (rec.timestamp) rec.timestamp = formatTimestamp(rec.timestamp)
-    return rec
-  })
+  return (body.recordings ?? []).map((rec) => normalizeRecordingFields(rec))
 }
 
 export async function apiUpdateRecordingTitle(id: string, title: string): Promise<void> {
@@ -119,7 +122,5 @@ export async function apiGetRecording(id: string): Promise<Recording> {
   }
 
   const rec: Recording & { durationFormatted?: string } = await res.json()
-  if (rec.durationFormatted) rec.duration = rec.durationFormatted
-  if (rec.timestamp) rec.timestamp = formatTimestamp(rec.timestamp)
-  return rec
+  return normalizeRecordingFields(rec)
 }
