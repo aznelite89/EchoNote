@@ -11,6 +11,7 @@ interface HomeScreenProps {
   isRecording: boolean
   isProcessing: boolean
   recordingTime: string
+  liveTranscript?: string
   onRecordToggle: () => void
   recordings: Recording[]
   onRecordingClick: (recording: Recording) => void
@@ -58,6 +59,7 @@ export function HomeScreen({
   isRecording,
   isProcessing,
   recordingTime,
+  liveTranscript,
   onRecordToggle,
   recordings,
   onRecordingClick
@@ -191,8 +193,9 @@ export function HomeScreen({
               exit={{ opacity: 0, y: 20 }}
             >
               <p className="text-sm text-muted-foreground italic">
-                {'"'}...so we need to finalize the design by Friday and share it
-                with the team...{'"'}
+                {liveTranscript
+                  ? `"${liveTranscript}"`
+                  : "Listening..."}
               </p>
             </motion.div>
           )}

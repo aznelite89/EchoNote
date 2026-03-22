@@ -2,6 +2,17 @@
 
 ## 2026-03-22
 
+### Changed
+- `hooks/use-recorder.ts` — replaced WebSocket + AudioContext PCM streaming with browser-native Web Speech API (`webkitSpeechRecognition`) for instant live transcript (~100ms latency); on stop, uploads audio blob via `POST /recordings` then polls `GET /recordings/:id` every 2s until Whisper processing completes; auto-restarts recognition on silence/network errors; 60s polling timeout
+
+### Added
+- `lib/recording-api.ts` — `apiCreateRecording` (multipart upload) and `apiGetRecording` (fetch by id)
+- `types/recording.ts` — added `status`, `transcript`, `durationFormatted` optional fields
+
+### Changed
+- `app/page.tsx` — replaced simulated recording state/timer/toggle with `useRecorder` hook; recordings list is now mutable and prepends new recordings when they arrive
+- `components/home-screen.tsx` — `liveTranscript` prop wired into the transcription preview area; shows "Listening..." before first words arrive
+
 ### Added
 - `lib/api.ts` — `apiFetch` wrapper with JWT header; exports `apiLogin` (`POST /auth/login`) and `apiRegister` (`POST /auth/register`)
 - `types/user.ts` — `User` and `TokenPair` interfaces matching EchoNote-api spec

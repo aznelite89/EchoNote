@@ -9,6 +9,7 @@ import { ProfileScreen } from "@/components/profile-screen"
 import { SummaryScreen } from "@/components/summary-screen"
 import { BottomNav } from "@/components/bottom-nav"
 import { AuthScreens } from "@/components/auth-screens"
+import { useRecorder } from "@/hooks/use-recorder"
 import type { Recording } from "@/types/recording"
 
 // Sample data
@@ -130,46 +131,17 @@ type Tab = "home" | "history" | "insights" | "profile"
 export default function ConvoAI() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [activeTab, setActiveTab] = useState<Tab>("home")
-  const [isRecording, setIsRecording] = useState(false)
-  const [isProcessing, setIsProcessing] = useState(false)
-  const [recordingTime, setRecordingTime] = useState("00:00")
   const [selectedRecording, setSelectedRecording] = useState<Recording | null>(null)
-  const [recordings] = useState<Recording[]>(sampleRecordings)
+  const [recordings, setRecordings] = useState<Recording[]>(sampleRecordings)
 
-  // Recording timer
+  const { isRecording, isProcessing, recordingTime, liveTranscript, latestRecording, toggleRecording } = useRecorder()
+
+  // Prepend new recording when it arrives from the hook
   useEffect(() => {
-    let interval: NodeJS.Timeout
-
-    if (isRecording) {
-      let seconds = 0
-      interval = setInterval(() => {
-        seconds++
-        const mins = Math.floor(seconds / 60)
-        const secs = seconds % 60
-        setRecordingTime(
-          `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
-        )
-      }, 1000)
-    } else {
-      setRecordingTime("00:00")
+    if (latestRecording) {
+      setRecordings((prev) => [latestRecording, ...prev])
     }
-
-    return () => clearInterval(interval)
-  }, [isRecording])
-
-  const handleRecordToggle = useCallback(() => {
-    if (isRecording) {
-      setIsRecording(false)
-      setIsProcessing(true)
-      // Simulate AI processing
-      setTimeout(() => {
-        setIsProcessing(false)
-        // In a real app, this would add the new recording to the list
-      }, 3000)
-    } else {
-      setIsRecording(true)
-    }
-  }, [isRecording])
+  }, [latestRecording])
 
   const handleRecordingClick = useCallback((recording: Recording) => {
     setSelectedRecording(recording)
@@ -204,7 +176,8 @@ export default function ConvoAI() {
             isRecording={isRecording}
             isProcessing={isProcessing}
             recordingTime={recordingTime}
-            onRecordToggle={handleRecordToggle}
+            liveTranscript={liveTranscript}
+            onRecordToggle={toggleRecording}
             recordings={recordings}
             onRecordingClick={handleRecordingClick}
           />
