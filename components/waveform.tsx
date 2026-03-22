@@ -6,7 +6,7 @@ interface WaveformProps {
   isActive: boolean
 }
 
-export function Waveform({ isActive }: WaveformProps) {
+const Waveform = ({ isActive }: WaveformProps) => {
   const bars = 40
 
   return (
@@ -44,3 +44,5 @@ export function Waveform({ isActive }: WaveformProps) {
     </div>
   )
 }
+
+export default Waveform

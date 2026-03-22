@@ -1,14 +1,14 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { AnimatePresence } from "framer-motion"
-import { HomeScreen } from "@/components/home-screen"
-import { HistoryScreen } from "@/components/history-screen"
-import { InsightsScreen } from "@/components/insights-screen"
-import { ProfileScreen } from "@/components/profile-screen"
-import { SummaryScreen } from "@/components/summary-screen"
-import { BottomNav } from "@/components/bottom-nav"
-import { AuthScreens } from "@/components/auth-screens"
+import AuthScreens from "@/components/auth-screens"
+import BottomNav from "@/components/bottom-nav"
+import HistoryScreen from "@/components/history-screen"
+import HomeScreen from "@/components/home-screen"
+import InsightsScreen from "@/components/insights-screen"
+import ProfileScreen from "@/components/profile-screen"
+import SummaryScreen from "@/components/summary-screen"
 import { useRecorder } from "@/hooks/use-recorder"
 import { apiListRecordings, apiDeleteRecording, apiUpdateRecordingTitle } from "@/lib/recording-api"
 import { toast } from "sonner"
@@ -16,7 +16,7 @@ import type { Recording } from "@/types/recording"
 
 type Tab = "home" | "history" | "insights" | "profile"
 
-export default function ConvoAI() {
+const ConvoAI = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   // Restore auth state from localStorage after hydration
@@ -164,3 +164,5 @@ export default function ConvoAI() {
     </main>
   )
 }
+
+export default ConvoAI

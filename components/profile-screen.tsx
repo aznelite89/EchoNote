@@ -2,23 +2,23 @@
 
 import { motion } from "framer-motion"
 import {
-  Settings,
   Bell,
-  Cloud,
-  Lock,
-  HelpCircle,
   ChevronRight,
-  Moon,
+  Cloud,
   Globe,
+  HelpCircle,
+  Lock,
+  LogOut,
+  Moon,
+  Settings,
   Smartphone,
-  LogOut
 } from "lucide-react"
 
 interface ProfileScreenProps {
   onLogout?: () => void
 }
 
-export function ProfileScreen({ onLogout }: ProfileScreenProps) {
+const ProfileScreen = ({ onLogout }: ProfileScreenProps) => {
   const menuItems = [
     { icon: Bell, label: "Notifications", badge: "3" },
     { icon: Cloud, label: "Cloud Sync", status: "Connected" },
@@ -198,3 +198,5 @@ export function ProfileScreen({ onLogout }: ProfileScreenProps) {
     </div>
   )
 }
+
+export default ProfileScreen

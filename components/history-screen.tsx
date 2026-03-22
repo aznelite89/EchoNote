@@ -1,17 +1,17 @@
 "use client"
 
+import { useState } from "react"
 import { motion } from "framer-motion"
 import {
-  Search,
   Filter,
-  Video,
+  MessageSquare,
   Phone,
+  Search,
   Users,
-  MessageSquare
+  Video,
 } from "lucide-react"
 import type { Recording } from "@/types/recording"
-import { RecordingCard } from "./recording-card"
-import { useState } from "react"
+import RecordingCard from "./recording-card"
 
 interface HistoryScreenProps {
   recordings: Recording[]
@@ -29,11 +29,11 @@ const filters: { id: FilterType; label: string; icon?: any }[] = [
   { id: "chat", label: "Chats", icon: MessageSquare }
 ]
 
-export function HistoryScreen({
+const HistoryScreen = ({
   recordings,
   onRecordingClick,
   onRecordingDelete,
-}: HistoryScreenProps) {
+}: HistoryScreenProps) => {
   const [activeFilter, setActiveFilter] = useState<FilterType>("all")
   const [searchQuery, setSearchQuery] = useState("")
 
@@ -186,3 +186,5 @@ export function HistoryScreen({
     </div>
   )
 }
+
+export default HistoryScreen

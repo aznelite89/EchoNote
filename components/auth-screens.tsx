@@ -1,16 +1,16 @@
 "use client"
 
-import { useState, useCallback } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Check } from "lucide-react"
+import { useCallback, useState } from "react"
+import { AnimatePresence, motion } from "framer-motion"
+import { ArrowRight, Check, Eye, EyeOff, Lock, Mail, User } from "lucide-react"
+import { toast, Toaster } from "sonner"
+import EchoNoteLogo from "@/components/echonote-logo"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { EchoNoteLogo } from "@/components/echonote-logo"
-import { cn } from "@/lib/utils"
-import { MOTION_SSR_SAFE } from "@/lib/motion-policy"
-import { toast, Toaster } from "sonner"
 import { apiLogin, apiRegister } from "@/lib/api"
+import { MOTION_SSR_SAFE } from "@/lib/motion-policy"
+import { cn } from "@/lib/utils"
 
 type AuthMode = "login" | "signup"
 
@@ -19,26 +19,26 @@ interface AuthScreensProps {
 }
 
 // Validation helpers
-function validateEmail(email: string): string | null {
+const validateEmail = (email: string): string | null => {
   if (!email) return "Email is required"
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return "Invalid email format"
   return null
 }
 
-function validatePassword(password: string): string | null {
+const validatePassword = (password: string): string | null => {
   if (!password) return "Password is required"
   if (password.length < 8) return "Password must be at least 8 characters"
   return null
 }
 
-function validateName(name: string): string | null {
+const validateName = (name: string): string | null => {
   if (!name) return "Name is required"
   if (name.length < 2) return "Name must be at least 2 characters"
   return null
 }
 
 // Social login button component
-function SocialButton({
+const SocialButton = ({
   provider,
   icon,
   onClick
@@ -46,7 +46,7 @@ function SocialButton({
   provider: string
   icon: React.ReactNode
   onClick: () => void
-}) {
+}) => {
   return (
     <Button
       variant="outline"
@@ -59,7 +59,7 @@ function SocialButton({
 }
 
 // Google Icon
-function GoogleIcon() {
+const GoogleIcon = () => {
   return (
     <svg className="w-5 h-5" viewBox="0 0 24 24">
       <path
@@ -83,7 +83,7 @@ function GoogleIcon() {
 }
 
 // Apple Icon
-function AppleIcon() {
+const AppleIcon = () => {
   return (
     <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
       <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
@@ -92,7 +92,7 @@ function AppleIcon() {
 }
 
 /** Production: classic Framer entrance (`initial` opacity/y). Dev: `initial={false}` so login is visible without entrance. */
-function AuthLogoShell({ children }: { children: React.ReactNode }) {
+const AuthLogoShell = ({ children }: { children: React.ReactNode }) => {
   return (
     <motion.div
       className="flex justify-center pt-8 pb-12"
@@ -105,7 +105,7 @@ function AuthLogoShell({ children }: { children: React.ReactNode }) {
   )
 }
 
-function AuthCardShell({ children }: { children: React.ReactNode }) {
+const AuthCardShell = ({ children }: { children: React.ReactNode }) => {
   return (
     <motion.div
       className="flex-1 flex flex-col max-w-sm mx-auto w-full"
@@ -119,7 +119,7 @@ function AuthCardShell({ children }: { children: React.ReactNode }) {
 }
 
 // Animated background
-function AuthBackground() {
+const AuthBackground = () => {
   return (
     <div className="absolute inset-0 overflow-hidden">
       {/* Gradient orbs */}
@@ -198,7 +198,7 @@ function AuthBackground() {
 }
 
 // Input field component with icon
-function AuthInput({
+const AuthInput = ({
   icon: Icon,
   label,
   type = "text",
@@ -220,7 +220,7 @@ function AuthInput({
   showPasswordToggle?: boolean
   showPassword?: boolean
   onTogglePassword?: () => void
-}) {
+}) => {
   return (
     <div className="space-y-2">
       <Label className="text-muted-foreground text-sm">{label}</Label>
@@ -266,7 +266,7 @@ function AuthInput({
   )
 }
 
-export function AuthScreens({ onAuthSuccess }: AuthScreensProps) {
+const AuthScreens = ({ onAuthSuccess }: AuthScreensProps) => {
   const [mode, setMode] = useState<AuthMode>("login")
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
@@ -574,7 +574,7 @@ export function AuthScreens({ onAuthSuccess }: AuthScreensProps) {
 }
 
 // Password requirement indicator
-function PasswordRequirement({ met, text }: { met: boolean; text: string }) {
+const PasswordRequirement = ({ met, text }: { met: boolean; text: string }) => {
   return (
     <motion.div
       className="flex items-center gap-2 text-xs"
@@ -600,3 +600,5 @@ function PasswordRequirement({ met, text }: { met: boolean; text: string }) {
     </motion.div>
   )
 }
+
+export default AuthScreens

@@ -1,11 +1,11 @@
 "use client"
 
-import { motion, AnimatePresence } from "framer-motion"
-import { MOTION_SSR_SAFE } from "@/lib/motion-policy"
-import { RecordButton } from "./record-button"
-import { Waveform } from "./waveform"
-import { BottomSheet } from "./bottom-sheet"
+import { AnimatePresence, motion } from "framer-motion"
 import type { Recording } from "@/types/recording"
+import { MOTION_SSR_SAFE } from "@/lib/motion-policy"
+import BottomSheet from "./bottom-sheet"
+import RecordButton from "./record-button"
+import Waveform from "./waveform"
 
 export interface HomeScreenProps {
   isRecording: boolean
@@ -20,7 +20,7 @@ export interface HomeScreenProps {
 }
 
 /** Production: classic Framer entrance. Dev: no entrance (`initial={false}`) so layout is visible immediately. */
-function HomeStatusShell({ children }: { children: React.ReactNode }) {
+const HomeStatusShell = ({ children }: { children: React.ReactNode }) => {
   return (
     <motion.div
       className="mb-8 text-center"
@@ -32,7 +32,7 @@ function HomeStatusShell({ children }: { children: React.ReactNode }) {
   )
 }
 
-function HomeRecordShell({ children }: { children: React.ReactNode }) {
+const HomeRecordShell = ({ children }: { children: React.ReactNode }) => {
   return (
     <motion.div
       initial={MOTION_SSR_SAFE ? { opacity: 0, scale: 0.8 } : false}
@@ -44,7 +44,7 @@ function HomeRecordShell({ children }: { children: React.ReactNode }) {
   )
 }
 
-function HomeWaveShell({ children }: { children: React.ReactNode }) {
+const HomeWaveShell = ({ children }: { children: React.ReactNode }) => {
   return (
     <motion.div
       className="mt-10 w-full max-w-sm"
@@ -57,7 +57,7 @@ function HomeWaveShell({ children }: { children: React.ReactNode }) {
   )
 }
 
-export function HomeScreen({
+const HomeScreen = ({
   isRecording,
   isProcessing,
   recordingTime,
@@ -66,7 +66,7 @@ export function HomeScreen({
   recordings,
   onRecordingClick,
   onRecordingDelete,
-}: HomeScreenProps) {
+}: HomeScreenProps) => {
   return (
     <div className="relative min-h-screen overflow-hidden">
       {/* Animated Background */}
@@ -214,3 +214,5 @@ export function HomeScreen({
     </div>
   )
 }
+
+export default HomeScreen

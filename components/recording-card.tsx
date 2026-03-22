@@ -21,11 +21,11 @@ const typeIcons = {
 const DELETE_WIDTH = 80
 const SNAP_THRESHOLD = -50
 
-export function RecordingCard({
+const RecordingCard = ({
   recording,
   onClick,
   onRecordingDelete,
-}: RecordingCardProps) {
+}: RecordingCardProps) => {
   const Icon = typeIcons[recording.type]
   const x = useMotionValue(0)
   const controls = useAnimationControls()
@@ -102,3 +102,5 @@ export function RecordingCard({
     </div>
   )
 }
+
+export default RecordingCard

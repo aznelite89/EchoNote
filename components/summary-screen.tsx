@@ -1,21 +1,21 @@
 "use client"
 
+import { useEffect, useRef, useState } from "react"
 import { motion } from "framer-motion"
 import {
   ArrowLeft,
-  Share2,
-  Download,
-  Edit3,
   Check,
   Circle,
+  Download,
+  Edit3,
   Quote,
+  Share2,
   Sparkles,
-  Trash2
+  Trash2,
 } from "lucide-react"
-import type { Recording, ActionItem } from "@/types/recording"
-import { useState, useRef, useEffect } from "react"
-import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import type { ActionItem, Recording } from "@/types/recording"
 
 interface SummaryScreenProps {
   recording: Recording
@@ -23,7 +23,7 @@ interface SummaryScreenProps {
   onTitleChange?: (recordingId: string, title: string) => void
 }
 
-export function SummaryScreen({ recording, onBack, onTitleChange }: SummaryScreenProps) {
+const SummaryScreen = ({ recording, onBack, onTitleChange }: SummaryScreenProps) => {
   const [actionItems, setActionItems] = useState<ActionItem[]>(
     recording.actionItems || []
   )
@@ -325,3 +325,5 @@ export function SummaryScreen({ recording, onBack, onTitleChange }: SummaryScree
     </motion.div>
   )
 }
+
+export default SummaryScreen

@@ -9,7 +9,7 @@ interface RecordButtonProps {
   onClick: () => void
 }
 
-export function RecordButton({ isRecording, isProcessing, onClick }: RecordButtonProps) {
+const RecordButton = ({ isRecording, isProcessing, onClick }: RecordButtonProps) => {
   return (
     <div className="relative flex items-center justify-center">
       {/* Outer glow rings */}
@@ -124,3 +124,5 @@ export function RecordButton({ isRecording, isProcessing, onClick }: RecordButto
     </div>
   )
 }
+
+export default RecordButton

@@ -1,8 +1,8 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { cn } from "@/lib/utils"
 import { MOTION_SSR_SAFE } from "@/lib/motion-policy"
+import { cn } from "@/lib/utils"
 
 interface EchoNoteLogoProps {
   size?: "sm" | "md" | "lg" | "xl"
@@ -18,12 +18,12 @@ const sizeConfig = {
   xl: { icon: 72, text: "text-3xl", gap: "gap-4" }
 }
 
-export function EchoNoteLogo({
+const EchoNoteLogo = ({
   size = "md",
   showText = true,
   className,
   animated = true
-}: EchoNoteLogoProps) {
+}: EchoNoteLogoProps) => {
   const config = sizeConfig[size]
   /** Production: full ring/line intro (classic `animated`). Dev: no hidden SSR `initial` so local prerender stays readable. */
   const runIntro = animated && MOTION_SSR_SAFE
@@ -140,13 +140,13 @@ export function EchoNoteLogo({
 }
 
 // App Icon variant - for app stores and favicons
-export function EchoNoteAppIcon({
+const EchoNoteAppIcon = ({
   size = 64,
   className
 }: {
   size?: number
   className?: string
-}) {
+}) => {
   return (
     <div
       className={cn(
@@ -197,3 +197,6 @@ export function EchoNoteAppIcon({
     </div>
   )
 }
+
+export { EchoNoteAppIcon }
+export default EchoNoteLogo

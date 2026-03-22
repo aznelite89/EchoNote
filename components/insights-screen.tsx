@@ -1,17 +1,17 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { TrendingUp, Clock, Mic, Zap, BarChart3, Calendar } from "lucide-react"
+import { BarChart3, Calendar, Clock, Mic, TrendingUp, Zap } from "lucide-react"
 
 interface InsightsScreenProps {
   totalRecordings: number
   totalDuration: string
 }
 
-export function InsightsScreen({
+const InsightsScreen = ({
   totalRecordings,
   totalDuration
-}: InsightsScreenProps) {
+}: InsightsScreenProps) => {
   const stats = [
     {
       icon: Mic,
@@ -188,3 +188,5 @@ export function InsightsScreen({
     </div>
   )
 }
+
+export default InsightsScreen

@@ -3,7 +3,7 @@
 import { motion, useMotionValue, useTransform, PanInfo } from "framer-motion"
 import { useEffect, useState } from "react"
 import type { Recording } from "@/types/recording"
-import { RecordingCard } from "./recording-card"
+import RecordingCard from "./recording-card"
 
 interface BottomSheetProps {
   recordings: Recording[]
@@ -11,11 +11,11 @@ interface BottomSheetProps {
   onRecordingDelete?: (id: string) => void | Promise<void>
 }
 
-export function BottomSheet({
+const BottomSheet = ({
   recordings,
   onRecordingClick,
   onRecordingDelete,
-}: BottomSheetProps) {
+}: BottomSheetProps) => {
   const [isExpanded, setIsExpanded] = useState(false)
   const y = useMotionValue(0)
 
@@ -99,3 +99,5 @@ export function BottomSheet({
     </motion.div>
   )
 }
+
+export default BottomSheet
