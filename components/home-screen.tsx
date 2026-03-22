@@ -68,7 +68,13 @@ const HomeScreen = ({
   onRecordingDelete,
 }: HomeScreenProps) => {
   return (
-    <div className="relative min-h-screen overflow-hidden">
+    <motion.div
+      className="relative min-h-screen overflow-hidden"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.15 }}
+    >
       {/* Static Background — no infinite animations for mobile perf */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-1/4 -left-1/4 h-[600px] w-[600px] rounded-full bg-primary/5 blur-3xl" />
@@ -181,7 +187,7 @@ const HomeScreen = ({
         onRecordingClick={onRecordingClick}
         onRecordingDelete={onRecordingDelete}
       />
-    </div>
+    </motion.div>
   )
 }
 

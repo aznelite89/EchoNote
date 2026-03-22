@@ -62,9 +62,13 @@ const InsightsScreen = ({
   ]
 
   return (
-    <div
+    <motion.div
       className="min-h-screen bg-background"
       style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 5rem)" }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.15 }}
     >
       {/* Header */}
       <div className="px-5 py-6">
@@ -185,7 +189,7 @@ const InsightsScreen = ({
           ))}
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }
 

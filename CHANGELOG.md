@@ -2,6 +2,10 @@
 
 ## 2026-03-22
 
+### Fixed
+
+- Tab navigation: all screen components (`home-screen`, `history-screen`, `insights-screen`, `profile-screen`) now use `motion.div` root with `exit` animation so `AnimatePresence mode="wait"` properly unmounts the previous screen when switching tabs
+
 ### Changed
 
 - `components/bottom-sheet.tsx` — tap Recent Notes header to expand/collapse; tap outside (backdrop) to dismiss; added visible `border-muted-foreground/20` border on the sheet
