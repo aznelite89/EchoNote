@@ -1,13 +1,12 @@
 "use client"
 
-import { useState, useCallback, useEffect } from "react"
-import { motion, AnimatePresence, useAnimationControls } from "framer-motion"
+import { useState, useCallback } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { EchoNoteLogo } from "@/components/echonote-logo"
-import { MotionEntrance } from "@/components/motion-entrance"
 import { cn } from "@/lib/utils"
 import { MOTION_SSR_SAFE } from "@/lib/motion-policy"
 
@@ -90,60 +89,12 @@ function AppleIcon() {
   )
 }
 
-function AuthModeHeading({ mode }: { mode: AuthMode }) {
-  const controls = useAnimationControls()
-  const [linked, setLinked] = useState(false)
-
-  useEffect(() => {
-    const id = requestAnimationFrame(() => {
-      setLinked(true)
-      controls.set({ opacity: 0, y: 10 })
-      void controls.start({
-        opacity: 1,
-        y: 0,
-        transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1] },
-      })
-    })
-    return () => cancelAnimationFrame(id)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [controls])
-
-  return (
-    <motion.div
-      initial={false}
-      exit={{ opacity: 0, y: -10 }}
-      transition={{ duration: 0.3 }}
-      animate={linked ? controls : { opacity: 1, y: 0 }}
-    >
-      <h1 className="text-2xl font-black tracking-tight text-foreground mb-2">
-        {mode === "login" ? "Welcome back" : "Create account"}
-      </h1>
-      <p className="text-sm text-muted-foreground">
-        {mode === "login"
-          ? "Sign in to continue capturing conversations"
-          : "Start your free trial today"}
-      </p>
-    </motion.div>
-  )
-}
-
+/** Production: classic Framer entrance (`initial` opacity/y). Dev: `initial={false}` so login is visible without entrance. */
 function AuthLogoShell({ children }: { children: React.ReactNode }) {
-  if (MOTION_SSR_SAFE) {
-    return (
-      <MotionEntrance
-        className="flex justify-center pt-8 pb-12"
-        staticTarget={{ opacity: 1, y: 0 }}
-        entranceFrom={{ opacity: 0, y: -20 }}
-        entranceTransition={{ duration: 0.5 }}
-      >
-        {children}
-      </MotionEntrance>
-    )
-  }
   return (
     <motion.div
       className="flex justify-center pt-8 pb-12"
-      initial={false}
+      initial={MOTION_SSR_SAFE ? { opacity: 0, y: -20 } : false}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
@@ -153,22 +104,10 @@ function AuthLogoShell({ children }: { children: React.ReactNode }) {
 }
 
 function AuthCardShell({ children }: { children: React.ReactNode }) {
-  if (MOTION_SSR_SAFE) {
-    return (
-      <MotionEntrance
-        className="flex-1 flex flex-col max-w-sm mx-auto w-full"
-        staticTarget={{ opacity: 1, y: 0 }}
-        entranceFrom={{ opacity: 0, y: 20 }}
-        entranceTransition={{ duration: 0.5, delay: 0.2 }}
-      >
-        {children}
-      </MotionEntrance>
-    )
-  }
   return (
     <motion.div
       className="flex-1 flex flex-col max-w-sm mx-auto w-full"
-      initial={false}
+      initial={MOTION_SSR_SAFE ? { opacity: 0, y: 20 } : false}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
     >
@@ -418,26 +357,22 @@ export function AuthScreens({ onAuthSuccess }: AuthScreensProps) {
           {/* Header */}
           <div className="text-center mb-8">
             <AnimatePresence mode="wait">
-              {MOTION_SSR_SAFE ? (
-                <AuthModeHeading key={mode} mode={mode} />
-              ) : (
-                <motion.div
-                  key={mode}
-                  initial={false}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <h1 className="text-2xl font-black tracking-tight text-foreground mb-2">
-                    {mode === "login" ? "Welcome back" : "Create account"}
-                  </h1>
-                  <p className="text-sm text-muted-foreground">
-                    {mode === "login"
-                      ? "Sign in to continue capturing conversations"
-                      : "Start your free trial today"}
-                  </p>
-                </motion.div>
-              )}
+              <motion.div
+                key={mode}
+                initial={MOTION_SSR_SAFE ? { opacity: 0, y: 10 } : false}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+              >
+                <h1 className="text-2xl font-black tracking-tight text-foreground mb-2">
+                  {mode === "login" ? "Welcome back" : "Create account"}
+                </h1>
+                <p className="text-sm text-muted-foreground">
+                  {mode === "login"
+                    ? "Sign in to continue capturing conversations"
+                    : "Start your free trial today"}
+                </p>
+              </motion.div>
             </AnimatePresence>
           </div>
 

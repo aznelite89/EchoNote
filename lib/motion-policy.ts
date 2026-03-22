@@ -1,7 +1,6 @@
 /**
- * Production: visible-first HTML + post-mount Framer entrance (avoids `opacity: 0` in SSR).
- * Development: entrance wrappers use `initial={false}` so prerendered HTML stays visible if
- * hydration is slow; Framer still animates after mount. (Classic `initial={{ opacity: 0 }}` in
- * dev SSR can look “blank” until JS runs.)
+ * When true (production / Vercel): classic Framer `initial` + `animate` entrance on auth & home.
+ * When false (`pnpm dev`): same blocks use `initial={false}` so the login/home shell is visible
+ * without entrance motion (avoids `opacity: 0` in prerendered HTML).
  */
 export const MOTION_SSR_SAFE = process.env.NODE_ENV === "production"

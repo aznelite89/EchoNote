@@ -1,7 +1,6 @@
 "use client"
 
 import { motion, AnimatePresence } from "framer-motion"
-import { MotionEntrance } from "@/components/motion-entrance"
 import { MOTION_SSR_SAFE } from "@/lib/motion-policy"
 import { RecordButton } from "./record-button"
 import { Waveform } from "./waveform"
@@ -17,22 +16,12 @@ interface HomeScreenProps {
   onRecordingClick: (recording: Recording) => void
 }
 
+/** Production: classic Framer entrance. Dev: no entrance (`initial={false}`) so layout is visible immediately. */
 function HomeStatusShell({ children }: { children: React.ReactNode }) {
-  if (MOTION_SSR_SAFE) {
-    return (
-      <MotionEntrance
-        className="mb-8 text-center"
-        staticTarget={{ opacity: 1, y: 0 }}
-        entranceFrom={{ opacity: 0, y: -20 }}
-      >
-        {children}
-      </MotionEntrance>
-    )
-  }
   return (
     <motion.div
       className="mb-8 text-center"
-      initial={false}
+      initial={MOTION_SSR_SAFE ? { opacity: 0, y: -20 } : false}
       animate={{ opacity: 1, y: 0 }}
     >
       {children}
@@ -41,20 +30,9 @@ function HomeStatusShell({ children }: { children: React.ReactNode }) {
 }
 
 function HomeRecordShell({ children }: { children: React.ReactNode }) {
-  if (MOTION_SSR_SAFE) {
-    return (
-      <MotionEntrance
-        staticTarget={{ opacity: 1, scale: 1 }}
-        entranceFrom={{ opacity: 0, scale: 0.8 }}
-        entranceTransition={{ delay: 0.1 }}
-      >
-        {children}
-      </MotionEntrance>
-    )
-  }
   return (
     <motion.div
-      initial={false}
+      initial={MOTION_SSR_SAFE ? { opacity: 0, scale: 0.8 } : false}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ delay: 0.1 }}
     >
@@ -64,22 +42,10 @@ function HomeRecordShell({ children }: { children: React.ReactNode }) {
 }
 
 function HomeWaveShell({ children }: { children: React.ReactNode }) {
-  if (MOTION_SSR_SAFE) {
-    return (
-      <MotionEntrance
-        className="mt-10 w-full max-w-sm"
-        staticTarget={{ opacity: 1, y: 0 }}
-        entranceFrom={{ opacity: 0, y: 20 }}
-        entranceTransition={{ delay: 0.2 }}
-      >
-        {children}
-      </MotionEntrance>
-    )
-  }
   return (
     <motion.div
       className="mt-10 w-full max-w-sm"
-      initial={false}
+      initial={MOTION_SSR_SAFE ? { opacity: 0, y: 20 } : false}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
     >
