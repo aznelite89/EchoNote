@@ -1,5 +1,6 @@
 "use client"
 
+import type { List, Map as ImMap } from "immutable"
 import { useCallback, useEffect, useMemo } from "react"
 import { AnimatePresence } from "framer-motion"
 import AuthScreens from "@/components/auth-screens"
@@ -33,12 +34,13 @@ const ConvoAI = () => {
   )
 
   const recordings = useMemo(
-    () => recordingsList.toJS() as Recording[],
+    () =>
+      (recordingsList as List<ImMap<string, unknown>>).toJS() as unknown as Recording[],
     [recordingsList]
   )
   const selectedRecording = useMemo((): Recording | null => {
     if (selectedImmutable == null) return null
-    return selectedImmutable.toJS() as Recording
+    return (selectedImmutable as ImMap<string, unknown>).toJS() as unknown as Recording
   }, [selectedImmutable])
 
   const { isRecording, isProcessing, recordingTime, liveTranscript, latestRecording, toggleRecording } =
