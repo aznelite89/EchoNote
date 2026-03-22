@@ -4,15 +4,21 @@
 
 ### Added
 
+- `lib/recording-api.ts` — `apiUpdateRecordingTitle()` calls `PATCH /recordings/:id` with JSON `{ title }`
+- `components/summary-screen.tsx` — pencil opens title edit with focused shadcn `Input`; green check saves and trash cancels; updates list via `onTitleChange`
 - `lib/recording-api.ts` — `apiListRecordings()` fetches recordings from `GET /recordings` with normalization
+- `lib/recording-api.ts` — `apiDeleteRecording()` calls `DELETE /recordings/:id`
+- `components/recording-card.tsx` — swipe-left-to-delete with red trash button using Framer Motion drag
 
 ### Fixed
 
+- `lib/recording-api.ts` — auto-redirect to login on 401 (expired/invalid token); clears stored tokens and reloads page
 - `app/page.tsx` — persist auth state across page refresh by reading `accessToken` from `localStorage` on mount; clear tokens on logout
 - `lib/recording-api.ts` — format ISO timestamp from API into friendly format ("Today, 11:59 AM" / "Yesterday, 3:00 PM" / "Mar 22, 11:59 AM")
 
 ### Changed
 
+- `app/page.tsx` — saving an edited recording title calls `apiUpdateRecordingTitle`; optimistic UI with rollback and toast on failure
 - `app/page.tsx` — replaced hardcoded sample recordings with `apiListRecordings()` fetch on mount; recordings persist across page refresh
 
 ### Changed

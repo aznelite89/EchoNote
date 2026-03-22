@@ -16,6 +16,7 @@ import { useState } from "react"
 interface HistoryScreenProps {
   recordings: Recording[]
   onRecordingClick: (recording: Recording) => void
+  onRecordingDelete?: (id: string) => void
 }
 
 type FilterType = "all" | "meeting" | "call" | "interview" | "chat"
@@ -30,7 +31,8 @@ const filters: { id: FilterType; label: string; icon?: any }[] = [
 
 export function HistoryScreen({
   recordings,
-  onRecordingClick
+  onRecordingClick,
+  onRecordingDelete,
 }: HistoryScreenProps) {
   const [activeFilter, setActiveFilter] = useState<FilterType>("all")
   const [searchQuery, setSearchQuery] = useState("")
@@ -159,6 +161,7 @@ export function HistoryScreen({
                     <RecordingCard
                       recording={recording}
                       onClick={() => onRecordingClick(recording)}
+                      onDelete={onRecordingDelete}
                     />
                   </motion.div>
                 ))}

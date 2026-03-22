@@ -10,7 +10,8 @@ import { SummaryScreen } from "@/components/summary-screen"
 import { BottomNav } from "@/components/bottom-nav"
 import { AuthScreens } from "@/components/auth-screens"
 import { useRecorder } from "@/hooks/use-recorder"
-import { apiListRecordings } from "@/lib/recording-api"
+import { apiListRecordings, apiDeleteRecording, apiUpdateRecordingTitle } from "@/lib/recording-api"
+import { toast } from "sonner"
 import type { Recording } from "@/types/recording"
 
 type Tab = "home" | "history" | "insights" | "profile"
@@ -52,8 +53,49 @@ export default function ConvoAI() {
     setSelectedRecording(null)
   }, [])
 
+  const handleRecordingTitleChange = useCallback(async (id: string, newTitle: string) => {
+    let previousTitle = ""
+
+    setRecordings((prev) => {
+      const cur = prev.find((r) => r.id === id)
+      if (cur) previousTitle = cur.title
+      return prev.map((r) => (r.id === id ? { ...r, title: newTitle } : r))
+    })
+
+    setSelectedRecording((sel) => {
+      if (sel?.id === id) {
+        if (previousTitle === "") previousTitle = sel.title
+        return { ...sel, title: newTitle }
+      }
+      return sel
+    })
+
+    try {
+      await apiUpdateRecordingTitle(id, newTitle)
+    } catch {
+      toast.error("Failed to update title")
+      const revert = previousTitle
+      setRecordings((prev) =>
+        prev.map((r) => (r.id === id ? { ...r, title: revert } : r))
+      )
+      setSelectedRecording((sel) =>
+        sel?.id === id ? { ...sel, title: revert } : sel
+      )
+    }
+  }, [])
+
   const handleAuthSuccess = useCallback(() => {
     setIsAuthenticated(true)
+  }, [])
+
+  const handleDeleteRecording = useCallback(async (id: string) => {
+    setRecordings((prev) => prev.filter((r) => r.id !== id))
+    try {
+      await apiDeleteRecording(id)
+    } catch {
+      toast.error("Failed to delete recording")
+      apiListRecordings().then(setRecordings)
+    }
   }, [])
 
   const handleLogout = useCallback(() => {
@@ -83,6 +125,7 @@ export default function ConvoAI() {
             onRecordToggle={toggleRecording}
             recordings={recordings}
             onRecordingClick={handleRecordingClick}
+            onRecordingDelete={handleDeleteRecording}
           />
         )}
         {activeTab === "history" && (
@@ -90,6 +133,7 @@ export default function ConvoAI() {
             key="history"
             recordings={recordings}
             onRecordingClick={handleRecordingClick}
+            onRecordingDelete={handleDeleteRecording}
           />
         )}
         {activeTab === "insights" && (
@@ -108,6 +152,7 @@ export default function ConvoAI() {
           <SummaryScreen
             recording={selectedRecording}
             onBack={handleBackFromSummary}
+            onTitleChange={handleRecordingTitleChange}
           />
         )}
       </AnimatePresence>

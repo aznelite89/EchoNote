@@ -9,20 +9,68 @@ import {
   Check,
   Circle,
   Quote,
-  Sparkles
+  Sparkles,
+  Trash2
 } from "lucide-react"
 import type { Recording, ActionItem } from "@/types/recording"
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 
 interface SummaryScreenProps {
   recording: Recording
   onBack: () => void
+  onTitleChange?: (recordingId: string, title: string) => void
 }
 
-export function SummaryScreen({ recording, onBack }: SummaryScreenProps) {
+export function SummaryScreen({ recording, onBack, onTitleChange }: SummaryScreenProps) {
   const [actionItems, setActionItems] = useState<ActionItem[]>(
     recording.actionItems || []
   )
+  const [isEditingTitle, setIsEditingTitle] = useState(false)
+  const [draftTitle, setDraftTitle] = useState(recording.title)
+  const titleInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    setIsEditingTitle(false)
+    setDraftTitle(recording.title)
+  }, [recording.id])
+
+  useEffect(() => {
+    if (!isEditingTitle) setDraftTitle(recording.title)
+  }, [recording.title, isEditingTitle])
+
+  useEffect(() => {
+    if (!isEditingTitle) return
+    const el = titleInputRef.current
+    if (!el) return
+    el.focus()
+    el.select()
+  }, [isEditingTitle])
+
+  const startTitleEdit = () => {
+    setDraftTitle(recording.title)
+    setIsEditingTitle(true)
+  }
+
+  const cancelTitleEdit = () => {
+    setDraftTitle(recording.title)
+    setIsEditingTitle(false)
+  }
+
+  const saveTitleEdit = () => {
+    const next = draftTitle.trim() || recording.title
+    onTitleChange?.(recording.id, next)
+    setIsEditingTitle(false)
+  }
+
+  const onTitleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault()
+      saveTitleEdit()
+    }
+    if (e.key === "Escape") cancelTitleEdit()
+  }
 
   const toggleActionItem = (id: string) => {
     setActionItems((items) =>
@@ -52,12 +100,40 @@ export function SummaryScreen({ recording, onBack }: SummaryScreenProps) {
             <span className="text-sm">Back</span>
           </motion.button>
           <div className="flex items-center gap-2">
-            <motion.button
-              className="rounded-full bg-secondary/50 p-2"
-              whileTap={{ scale: 0.95 }}
-            >
-              <Edit3 className="h-5 w-5 text-muted-foreground" />
-            </motion.button>
+            {isEditingTitle ? (
+              <>
+                <Button
+                  type="button"
+                  size="icon"
+                  variant="secondary"
+                  className="h-10 w-10 shrink-0 rounded-full bg-secondary/50 border-0 shadow-none hover:bg-secondary/70"
+                  onClick={saveTitleEdit}
+                  aria-label="Save title"
+                >
+                  <Check className="h-5 w-5 text-emerald-500" />
+                </Button>
+                <Button
+                  type="button"
+                  size="icon"
+                  variant="secondary"
+                  className="h-10 w-10 shrink-0 rounded-full bg-secondary/50 border-0 shadow-none hover:bg-secondary/70"
+                  onClick={cancelTitleEdit}
+                  aria-label="Cancel editing title"
+                >
+                  <Trash2 className="h-5 w-5 text-muted-foreground" />
+                </Button>
+              </>
+            ) : (
+              <motion.button
+                type="button"
+                className="rounded-full bg-secondary/50 p-2"
+                whileTap={{ scale: 0.95 }}
+                onClick={startTitleEdit}
+                aria-label="Edit title"
+              >
+                <Edit3 className="h-5 w-5 text-muted-foreground" />
+              </motion.button>
+            )}
             <motion.button
               className="rounded-full bg-secondary/50 p-2"
               whileTap={{ scale: 0.95 }}
@@ -94,9 +170,20 @@ export function SummaryScreen({ recording, onBack }: SummaryScreenProps) {
               </span>
             )}
           </div>
-          <h1 className="text-3xl font-black text-foreground tracking-tight">
-            {recording.title}
-          </h1>
+          {isEditingTitle ? (
+            <Input
+              ref={titleInputRef}
+              value={draftTitle}
+              onChange={(e) => setDraftTitle(e.target.value)}
+              onKeyDown={onTitleKeyDown}
+              className="mt-0 h-auto min-h-11 border-primary/40 bg-primary/5 py-2 text-3xl font-black tracking-tight text-foreground shadow-none focus-visible:border-primary focus-visible:ring-primary/30"
+              aria-label="Recording title"
+            />
+          ) : (
+            <h1 className="text-3xl font-black text-foreground tracking-tight">
+              {recording.title}
+            </h1>
+          )}
           <div className="mt-2 flex items-center gap-3 text-sm text-muted-foreground">
             <span>{recording.duration}</span>
             <span className="h-1 w-1 rounded-full bg-muted-foreground/50" />

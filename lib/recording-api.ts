@@ -24,6 +24,14 @@ function authHeaders(): Record<string, string> {
   return token ? { Authorization: `Bearer ${token}` } : {}
 }
 
+function handleUnauthorized(res: Response): void {
+  if (res.status === 401 && typeof window !== "undefined") {
+    localStorage.removeItem("accessToken")
+    localStorage.removeItem("refreshToken")
+    window.location.reload()
+  }
+}
+
 export async function apiCreateRecording(
   blob: Blob,
   title: string,
@@ -43,6 +51,7 @@ export async function apiCreateRecording(
   })
 
   if (!res.ok) {
+    handleUnauthorized(res)
     const body = await res.json().catch(() => ({ error: "Upload failed" }))
     throw new Error(body.error ?? "Upload failed")
   }
@@ -58,7 +67,10 @@ export async function apiListRecordings(limit = 20): Promise<Recording[]> {
     headers: { ...authHeaders(), "Content-Type": "application/json" },
   })
 
-  if (!res.ok) return []
+  if (!res.ok) {
+    handleUnauthorized(res)
+    return []
+  }
 
   const body: { recordings: (Recording & { durationFormatted?: string })[] } = await res.json()
   return (body.recordings ?? []).map((rec) => {
@@ -68,12 +80,40 @@ export async function apiListRecordings(limit = 20): Promise<Recording[]> {
   })
 }
 
+export async function apiUpdateRecordingTitle(id: string, title: string): Promise<void> {
+  const res = await fetch(`${BASE_URL}/recordings/${id}`, {
+    method: "PATCH",
+    headers: { ...authHeaders(), "Content-Type": "application/json" },
+    body: JSON.stringify({ title }),
+  })
+
+  if (!res.ok) {
+    handleUnauthorized(res)
+    const body = await res.json().catch(() => ({ error: "Update failed" }))
+    throw new Error(body.error ?? "Update failed")
+  }
+}
+
+export async function apiDeleteRecording(id: string): Promise<void> {
+  const res = await fetch(`${BASE_URL}/recordings/${id}`, {
+    method: "DELETE",
+    headers: authHeaders(),
+  })
+
+  if (!res.ok) {
+    handleUnauthorized(res)
+    const body = await res.json().catch(() => ({ error: "Delete failed" }))
+    throw new Error(body.error ?? "Delete failed")
+  }
+}
+
 export async function apiGetRecording(id: string): Promise<Recording> {
   const res = await fetch(`${BASE_URL}/recordings/${id}`, {
     headers: { ...authHeaders(), "Content-Type": "application/json" },
   })
 
   if (!res.ok) {
+    handleUnauthorized(res)
     const body = await res.json().catch(() => ({ error: "Fetch failed" }))
     throw new Error(body.error ?? "Fetch failed")
   }

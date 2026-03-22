@@ -15,6 +15,7 @@ interface HomeScreenProps {
   onRecordToggle: () => void
   recordings: Recording[]
   onRecordingClick: (recording: Recording) => void
+  onRecordingDelete?: (id: string) => void
 }
 
 /** Production: classic Framer entrance. Dev: no entrance (`initial={false}`) so layout is visible immediately. */
@@ -62,7 +63,8 @@ export function HomeScreen({
   liveTranscript,
   onRecordToggle,
   recordings,
-  onRecordingClick
+  onRecordingClick,
+  onRecordingDelete,
 }: HomeScreenProps) {
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -206,6 +208,7 @@ export function HomeScreen({
       <BottomSheet
         recordings={recordings}
         onRecordingClick={onRecordingClick}
+        onRecordingDelete={onRecordingDelete}
       />
     </div>
   )
