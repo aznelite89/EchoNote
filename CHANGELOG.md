@@ -2,6 +2,10 @@
 
 ## 2026-03-22
 
+### Changed
+
+- `components/bottom-sheet.tsx` — tap Recent Notes header to expand/collapse; tap outside (backdrop) to dismiss; added visible `border-muted-foreground/20` border on the sheet
+
 ### Fixed
 
 - Mobile FPS: `home-screen.tsx` — made ambient gradient orbs static (removed `repeat: Infinity` + `blur-3xl` animation); recording pulse uses opacity-only animation with `blur-2xl`
