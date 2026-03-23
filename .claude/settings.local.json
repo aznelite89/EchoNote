@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(pnpm build:*)"
+      "Bash(pnpm build:*)",
+      "Bash(ls -la /Users/chanthaithong/Desktop/own/EchoNote/components/*.tsx)",
+      "Bash(pnpm add:*)"
     ]
   }
 }

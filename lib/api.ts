@@ -49,3 +49,12 @@ export async function apiRegister(
     body: JSON.stringify({ email, name, password }),
   })
 }
+
+export async function apiGoogleLogin(
+  idToken: string
+): Promise<{ user: User; tokens: TokenPair }> {
+  return apiFetch("/auth/google", {
+    method: "POST",
+    body: JSON.stringify({ idToken }),
+  })
+}

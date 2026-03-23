@@ -3,18 +3,20 @@
 import { useCallback, useState } from "react"
 import { AnimatePresence, motion } from "framer-motion"
 import { ArrowRight, Check, Eye, EyeOff, Lock, Mail, User } from "lucide-react"
+import { GoogleLogin, type CredentialResponse } from "@react-oauth/google"
 import { toast, Toaster } from "sonner"
 import EchoNoteLogo from "@/components/echonote-logo"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { apiLogin, apiRegister } from "@/lib/api"
+import { apiLogin, apiRegister, apiGoogleLogin } from "@/lib/api"
 import { MOTION_SSR_SAFE } from "@/lib/motion-policy"
 import { cn } from "@/lib/utils"
 import { useAppDispatch } from "@/store/hooks"
 import { loginSuccess } from "@/slices/sessionSlice"
 
 type AuthMode = "login" | "signup"
+const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? ""
 
 // Validation helpers
 const validateEmail = (email: string): string | null => {
@@ -326,9 +328,24 @@ const AuthScreens = () => {
     [mode, name, email, password, dispatch]
   )
 
-  const handleSocialLogin = useCallback((_provider: string) => {
-    toast.error("Social login is not supported yet")
-  }, [])
+  const handleGoogleSuccess = useCallback(
+    async (response: CredentialResponse) => {
+      if (!response.credential) {
+        toast.error("Google sign-in failed: no credential received")
+        return
+      }
+      setIsLoading(true)
+      try {
+        const result = await apiGoogleLogin(response.credential)
+        dispatch(loginSuccess({ user: result.user, tokens: result.tokens }))
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : "Google sign-in failed")
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [dispatch]
+  )
 
   const toggleMode = useCallback(() => {
     setMode(mode === "login" ? "signup" : "login")
@@ -379,15 +396,33 @@ const AuthScreens = () => {
 
           {/* Social Login */}
           <div className="flex gap-3 mb-6">
-            <SocialButton
-              provider="google"
-              icon={<GoogleIcon />}
-              onClick={() => handleSocialLogin("google")}
-            />
+            {GOOGLE_CLIENT_ID ? (
+              <div className="flex-1 flex justify-center [&>div]:w-full [&_iframe]:!rounded-lg">
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={() => toast.error("Google sign-in failed")}
+                  theme="filled_black"
+                  shape="rectangular"
+                  size="large"
+                  width="100%"
+                  text={mode === "login" ? "signin_with" : "signup_with"}
+                />
+              </div>
+            ) : (
+              <SocialButton
+                provider="google"
+                icon={<GoogleIcon />}
+                onClick={() =>
+                  toast.error(
+                    "Google sign-in is unavailable. Set NEXT_PUBLIC_GOOGLE_CLIENT_ID."
+                  )
+                }
+              />
+            )}
             <SocialButton
               provider="apple"
               icon={<AppleIcon />}
-              onClick={() => handleSocialLogin("apple")}
+              onClick={() => toast.error("Apple sign-in is not supported yet")}
             />
           </div>
 

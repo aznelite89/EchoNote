@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-03-23
+
+### Added
+
+- Google Sign-In via `@react-oauth/google` — uses Google Identity Services credential flow to obtain id_token, sent to `POST /auth/google` backend endpoint
+- `lib/api.ts` — `apiGoogleLogin()` calls `POST /auth/google` with `{ idToken }`
+- `NEXT_PUBLIC_GOOGLE_CLIENT_ID` env var in `.env.local`
+
+### Changed
+
+- `components/redux-provider.tsx` — wraps app with `GoogleOAuthProvider`
+- `components/auth-screens.tsx` — replaced placeholder Google social button with `GoogleLogin` component; Apple button shows "not supported yet" toast
+
+### Fixed
+
+- Google sign-in now gracefully handles missing `NEXT_PUBLIC_GOOGLE_CLIENT_ID` by skipping OAuth provider initialization and showing a setup toast instead of triggering Google `401 invalid_client`
+
 ## 2026-03-22
 
 ### Fixed
