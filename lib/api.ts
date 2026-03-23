@@ -58,3 +58,13 @@ export async function apiGoogleLogin(
     body: JSON.stringify({ idToken }),
   })
 }
+
+export async function apiAppleLogin(
+  idToken: string,
+  name?: string
+): Promise<{ user: User; tokens: TokenPair }> {
+  return apiFetch("/auth/apple", {
+    method: "POST",
+    body: JSON.stringify({ idToken, ...(name ? { name } : {}) }),
+  })
+}

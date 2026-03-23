@@ -7,11 +7,20 @@
 - Google Sign-In via `@react-oauth/google` — uses Google Identity Services credential flow to obtain id_token, sent to `POST /auth/google` backend endpoint
 - `lib/api.ts` — `apiGoogleLogin()` calls `POST /auth/google` with `{ idToken }`
 - `NEXT_PUBLIC_GOOGLE_CLIENT_ID` env var in `.env.local`
+- Apple Sign-In via Apple JS SDK (`appleid.auth.js`) — popup flow returns id_token + optional user name on first authorization, sent to `POST /auth/apple`
+- `lib/apple-auth.ts` — loads Apple JS SDK on demand, initializes with `NEXT_PUBLIC_APPLE_CLIENT_ID`, returns `{ idToken, name? }`
+- `lib/api.ts` — `apiAppleLogin()` calls `POST /auth/apple` with `{ idToken, name? }`
+- `NEXT_PUBLIC_APPLE_CLIENT_ID` and `NEXT_PUBLIC_APPLE_REDIRECT_URI` env vars in `.env.local`
+- `lib/recording-api.ts` — `Insights` type and `apiGetInsights()` calling `GET /insights`
 
 ### Changed
 
+- `components/insights-screen.tsx` — replaced hardcoded mock data with live `GET /insights` API call; shows loading spinner, error/retry state; stats cards use real week-over-week change percentages; weekly activity chart uses actual dates/counts; added action item completion progress bar, avg confidence, and recordings-by-type breakdown
+- `app/page.tsx` — `InsightsScreen` no longer receives props (fetches its own data)
+
+
 - `components/redux-provider.tsx` — wraps app with `GoogleOAuthProvider`
-- `components/auth-screens.tsx` — replaced placeholder Google social button with `GoogleLogin` component; Apple button shows "not supported yet" toast
+- `components/auth-screens.tsx` — replaced placeholder Google social button with `GoogleLogin` component; wired Apple button to real Apple Sign-In flow
 
 ### Fixed
 

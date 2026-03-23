@@ -117,11 +117,7 @@ const ConvoAI = () => {
           />
         )}
         {activeTab === "insights" && (
-          <InsightsScreen
-            key="insights"
-            totalRecordings={recordings.length}
-            totalDuration="3h 24m"
-          />
+          <InsightsScreen key="insights" />
         )}
         {activeTab === "profile" && <ProfileScreen key="profile" onLogout={handleLogout} />}
       </AnimatePresence>

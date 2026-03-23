@@ -9,7 +9,8 @@ import EchoNoteLogo from "@/components/echonote-logo"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { apiLogin, apiRegister, apiGoogleLogin } from "@/lib/api"
+import { apiLogin, apiRegister, apiGoogleLogin, apiAppleLogin } from "@/lib/api"
+import { signInWithApple } from "@/lib/apple-auth"
 import { MOTION_SSR_SAFE } from "@/lib/motion-policy"
 import { cn } from "@/lib/utils"
 import { useAppDispatch } from "@/store/hooks"
@@ -347,6 +348,19 @@ const AuthScreens = () => {
     [dispatch]
   )
 
+  const handleAppleSignIn = useCallback(async () => {
+    setIsLoading(true)
+    try {
+      const { idToken, name: appleName } = await signInWithApple()
+      const result = await apiAppleLogin(idToken, appleName)
+      dispatch(loginSuccess({ user: result.user, tokens: result.tokens }))
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Apple sign-in failed")
+    } finally {
+      setIsLoading(false)
+    }
+  }, [dispatch])
+
   const toggleMode = useCallback(() => {
     setMode(mode === "login" ? "signup" : "login")
     setErrors({})
@@ -422,7 +436,7 @@ const AuthScreens = () => {
             <SocialButton
               provider="apple"
               icon={<AppleIcon />}
-              onClick={() => toast.error("Apple sign-in is not supported yet")}
+              onClick={handleAppleSignIn}
             />
           </div>
 

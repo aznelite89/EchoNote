@@ -124,3 +124,33 @@ export async function apiGetRecording(id: string): Promise<Recording> {
   const rec: Recording & { durationFormatted?: string } = await res.json()
   return normalizeRecordingFields(rec)
 }
+
+export interface Insights {
+  totalRecordings: number
+  totalDurationSecs: number
+  durationFormatted: string
+  totalActionItems: number
+  completedActions: number
+  thisWeekCount: number
+  avgConfidence: number
+  recordingsByType: Record<string, number>
+  weeklyActivity: { date: string; count: number }[]
+  recordingsChange: number
+  durationChange: number
+  actionItemChange: number
+  thisWeekChange: number
+}
+
+export async function apiGetInsights(): Promise<Insights> {
+  const res = await fetch(`${BASE_URL}/insights`, {
+    headers: { ...authHeaders(), "Content-Type": "application/json" },
+  })
+
+  if (!res.ok) {
+    handleUnauthorized(res)
+    const body = await res.json().catch(() => ({ error: "Failed to fetch insights" }))
+    throw new Error(body.error ?? "Failed to fetch insights")
+  }
+
+  return res.json()
+}
