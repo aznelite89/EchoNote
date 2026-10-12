@@ -1,4 +1,5 @@
 import type { Recording } from "@/types/recording"
+import { RECORDING_FILE_EXTENSIONS } from "@/constants/audio"
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080/api/v1"
 
@@ -17,6 +18,13 @@ function formatTimestamp(iso: string): string {
   if (date.toDateString() === yesterday.toDateString()) return `Yesterday, ${time}`
 
   return `${date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}, ${time}`
+}
+
+function recordingFileExtension(mimeType: string): string {
+  const container = mimeType.split(";")[0].trim()
+  const ext = RECORDING_FILE_EXTENSIONS[container]
+  if (!ext) throw new Error(`Unsupported recording format: ${mimeType || "unknown"}`)
+  return ext
 }
 
 function authHeaders(): Record<string, string> {
@@ -48,7 +56,7 @@ export async function apiCreateRecording(
   durationSecs: number
 ): Promise<Recording> {
   const form = new FormData()
-  form.append("audio", blob, "recording.webm")
+  form.append("audio", blob, `recording.${recordingFileExtension(blob.type)}`)
   form.append("title", title)
   form.append("type", type)
   form.append("duration", String(Math.round(durationSecs)))

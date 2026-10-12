@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-12
+
+### Changed
+- Recordings are captured as mono Opus at 32 kbps (`constants/audio.ts`), cutting file size about 4x so long meetings stay under Whisper's 25 MB limit
+
+### Fixed
+- Upload filename extension now matches the recorded format (webm, ogg or m4a) instead of always `.webm`
+
 ## 2026-03-23
 
 ### Added

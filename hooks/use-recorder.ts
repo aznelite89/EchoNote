@@ -4,6 +4,12 @@ import { useState, useRef, useCallback, useEffect } from "react"
 import { toast } from "sonner"
 import { apiCreateRecording, apiGetRecording } from "@/lib/recording-api"
 import type { Recording } from "@/types/recording"
+import {
+  DEFAULT_RECORDING_MIME_TYPE,
+  RECORDING_AUDIO_BITS_PER_SECOND,
+  RECORDING_CHANNEL_COUNT,
+  RECORDING_MIME_TYPES,
+} from "@/constants/audio"
 
 // ── SpeechRecognition type shim (vendor-prefixed in Chrome/Edge/Safari) ──
 interface SpeechRecognitionEvent extends Event {
@@ -127,15 +133,20 @@ export function useRecorder(): RecorderState {
     // 1. Microphone access
     let stream: MediaStream
     try {
-      stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      stream = await navigator.mediaDevices.getUserMedia({
+        audio: { channelCount: RECORDING_CHANNEL_COUNT },
+      })
     } catch {
       toast.error("Microphone access denied")
       return
     }
     streamRef.current = stream
 
-    // 2. MediaRecorder — collect audio blob for upload
-    const mediaRecorder = new MediaRecorder(stream)
+    // 2. MediaRecorder — collect compressed audio blob for upload
+    const mediaRecorder = new MediaRecorder(stream, {
+      mimeType: pickRecordingMimeType(),
+      audioBitsPerSecond: RECORDING_AUDIO_BITS_PER_SECOND,
+    })
     mediaRecorder.ondataavailable = (e) => {
       if (e.data.size > 0) chunksRef.current.push(e.data)
     }
@@ -261,6 +272,13 @@ export function useRecorder(): RecorderState {
     latestRecording,
     toggleRecording,
   }
+}
+
+function pickRecordingMimeType(): string {
+  return (
+    RECORDING_MIME_TYPES.find((type) => MediaRecorder.isTypeSupported(type)) ??
+    DEFAULT_RECORDING_MIME_TYPE
+  )
 }
 
 function formatTime(seconds: number): string {
